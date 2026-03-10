@@ -1,0 +1,1774 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>StudyOS — Command Your Learning</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #080c14;
+  --bg2: #0d1421;
+  --bg3: #111827;
+  --panel: #0f1829;
+  --panel2: #141f35;
+  --border: rgba(99,179,237,0.12);
+  --border2: rgba(99,179,237,0.22);
+  --glow: #3b82f6;
+  --glow2: #06b6d4;
+  --text: #e2e8f0;
+  --text2: #94a3b8;
+  --text3: #475569;
+  --white: #f0f6ff;
+  --success: #10b981;
+  --warn: #f59e0b;
+  --danger: #ef4444;
+
+  /* Subject Colors */
+  --phy: #f472b6;
+  --che: #a78bfa;
+  --mat: #34d399;
+  --his: #fbbf24;
+  --geo: #60a5fa;
+  --pol: #fb923c;
+  --eco: #4ade80;
+  --cur: #f87171;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Rajdhani', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+  position: relative;
+}
+
+/* ANIMATED BACKGROUND */
+.bg-grid {
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(59,130,246,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(59,130,246,0.03) 1px, transparent 1px);
+  background-size: 40px 40px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.bg-orbs {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.08;
+  animation: orbFloat 12s ease-in-out infinite;
+}
+
+.orb1 { width: 500px; height: 500px; background: #3b82f6; top: -200px; left: -100px; animation-delay: 0s; }
+.orb2 { width: 400px; height: 400px; background: #8b5cf6; bottom: -100px; right: -100px; animation-delay: 4s; }
+.orb3 { width: 300px; height: 300px; background: #06b6d4; top: 50%; left: 50%; animation-delay: 8s; }
+
+@keyframes orbFloat {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(30px, -40px) scale(1.05); }
+  66% { transform: translate(-20px, 20px) scale(0.95); }
+}
+
+/* LAYOUT */
+.app { position: relative; z-index: 1; display: flex; flex-direction: column; min-height: 100vh; }
+
+/* HEADER */
+header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 28px;
+  background: rgba(8,12,20,0.85);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border2);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.logo-icon {
+  width: 36px;
+  height: 36px;
+  border: 2px solid var(--glow);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  position: relative;
+  box-shadow: 0 0 16px rgba(59,130,246,0.3), inset 0 0 12px rgba(59,130,246,0.1);
+  animation: iconPulse 3s ease-in-out infinite;
+}
+
+@keyframes iconPulse {
+  0%, 100% { box-shadow: 0 0 16px rgba(59,130,246,0.3), inset 0 0 12px rgba(59,130,246,0.1); }
+  50% { box-shadow: 0 0 28px rgba(59,130,246,0.6), inset 0 0 20px rgba(59,130,246,0.2); }
+}
+
+.logo-text {
+  font-family: 'Orbitron', monospace;
+  font-size: 1.3rem;
+  font-weight: 900;
+  background: linear-gradient(135deg, #60a5fa, #a78bfa, #06b6d4);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  letter-spacing: 0.05em;
+}
+
+.logo-sub { font-size: 0.65rem; color: var(--text3); letter-spacing: 0.2em; text-transform: uppercase; font-family: 'JetBrains Mono', monospace; }
+
+.header-pills {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.hpill {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--panel2);
+  border: 1px solid var(--border);
+  border-radius: 30px;
+  padding: 7px 16px;
+}
+
+.hpill-val {
+  font-family: 'Orbitron', monospace;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--white);
+}
+
+.hpill-lbl { font-size: 0.65rem; color: var(--text3); text-transform: uppercase; letter-spacing: 0.12em; }
+
+.hpill-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  animation: dotBlink 2s ease-in-out infinite;
+}
+
+@keyframes dotBlink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+/* DATE */
+.header-date {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.72rem;
+  color: var(--text3);
+  text-align: right;
+}
+
+/* MAIN GRID */
+.main {
+  display: grid;
+  grid-template-columns: 320px 1fr 300px;
+  gap: 18px;
+  padding: 20px 24px;
+  flex: 1;
+}
+
+/* PANEL */
+.panel {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  overflow: hidden;
+  position: relative;
+}
+
+.panel::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--glow), transparent);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.panel:hover::before { opacity: 1; }
+
+.panel-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--border);
+  background: rgba(255,255,255,0.02);
+}
+
+.panel-title {
+  font-family: 'Orbitron', monospace;
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: var(--text2);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.panel-icon { font-size: 0.9rem; }
+
+.panel-body { padding: 18px; }
+
+/* SUBJECTS GRID */
+.subjects-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.subject-card {
+  border-radius: 10px;
+  padding: 12px 14px;
+  cursor: pointer;
+  border: 1.5px solid transparent;
+  transition: all 0.22s cubic-bezier(0.34,1.56,0.64,1);
+  position: relative;
+  overflow: hidden;
+}
+
+.subject-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: currentColor;
+  opacity: 0.06;
+  transition: opacity 0.2s;
+}
+
+.subject-card:hover::before { opacity: 0.12; }
+
+.subject-card.active {
+  border-color: currentColor;
+  box-shadow: 0 0 20px -4px currentColor;
+}
+
+.subject-card.active::before { opacity: 0.15; }
+
+.subj-emoji { font-size: 1.4rem; line-height: 1; margin-bottom: 4px; }
+.subj-name { font-weight: 700; font-size: 0.85rem; letter-spacing: 0.03em; }
+.subj-hrs {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem;
+  opacity: 0.7;
+  margin-top: 2px;
+}
+
+/* STOPWATCH */
+.stopwatch-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 10px 0 18px;
+}
+
+.sw-ring-wrap {
+  position: relative;
+  width: 220px;
+  height: 220px;
+  margin: 0 auto 16px;
+}
+
+.sw-svg {
+  width: 220px;
+  height: 220px;
+  transform: rotate(-90deg);
+}
+
+.sw-track { fill: none; stroke: rgba(99,179,237,0.08); stroke-width: 8; }
+
+.sw-progress {
+  fill: none;
+  stroke-width: 8;
+  stroke-linecap: round;
+  stroke-dasharray: 628;
+  stroke-dashoffset: 628;
+  transition: stroke-dashoffset 0.5s ease;
+  filter: drop-shadow(0 0 8px currentColor);
+}
+
+.sw-inner {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.sw-time {
+  font-family: 'Orbitron', monospace;
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: var(--white);
+  letter-spacing: 0.05em;
+  line-height: 1;
+  text-shadow: 0 0 30px rgba(99,179,237,0.5);
+  animation: timePulse 1s ease-in-out infinite;
+}
+
+@keyframes timePulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.85; }
+}
+
+.sw-time.running { animation: timePulse 0.5s ease-in-out infinite; }
+
+.sw-subject-label {
+  font-size: 0.7rem;
+  color: var(--text3);
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  margin-top: 4px;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+/* Tick marks around ring */
+.sw-ticks {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+}
+
+.sw-controls { display: flex; gap: 10px; }
+
+.sw-btn {
+  font-family: 'Orbitron', monospace;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  padding: 10px 20px;
+  border-radius: 30px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.sw-btn-start {
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: white;
+  box-shadow: 0 4px 20px rgba(16,185,129,0.4);
+}
+
+.sw-btn-start:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(16,185,129,0.5); }
+
+.sw-btn-stop {
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+  color: white;
+  box-shadow: 0 4px 20px rgba(239,68,68,0.4);
+}
+
+.sw-btn-stop:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(239,68,68,0.5); }
+
+.sw-btn-reset {
+  background: var(--panel2);
+  color: var(--text2);
+  border: 1px solid var(--border);
+}
+
+.sw-btn-reset:hover { background: var(--bg3); color: var(--white); }
+
+/* SESSION LOG FORM */
+.log-form { display: flex; flex-direction: column; gap: 12px; }
+
+.field-lbl {
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--text3);
+  margin-bottom: 5px;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+input, textarea, select {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 500;
+  width: 100%;
+  background: var(--bg2);
+  border: 1px solid var(--border2);
+  border-radius: 8px;
+  padding: 9px 13px;
+  color: var(--text);
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+input:focus, textarea:focus, select:focus {
+  border-color: var(--glow);
+  box-shadow: 0 0 0 3px rgba(59,130,246,0.12);
+}
+
+select option { background: var(--bg2); }
+textarea { resize: vertical; min-height: 60px; }
+
+.row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+.btn-log {
+  background: linear-gradient(135deg, #3b82f6, #6366f1);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 11px;
+  font-family: 'Orbitron', monospace;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  cursor: pointer;
+  width: 100%;
+  transition: all 0.2s;
+  box-shadow: 0 4px 20px rgba(59,130,246,0.3);
+}
+
+.btn-log:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(59,130,246,0.5); }
+
+/* MIDDLE COLUMN */
+.middle { display: flex; flex-direction: column; gap: 16px; }
+
+/* STATS ROW */
+.stats-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+
+.stat-card {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px 18px;
+  position: relative;
+  overflow: hidden;
+  transition: border-color 0.3s;
+}
+
+.stat-card::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 3px;
+  border-radius: 0 0 12px 12px;
+}
+
+.stat-card:nth-child(1)::after { background: linear-gradient(90deg, #3b82f6, #6366f1); }
+.stat-card:nth-child(2)::after { background: linear-gradient(90deg, #10b981, #06b6d4); }
+.stat-card:nth-child(3)::after { background: linear-gradient(90deg, #f59e0b, #ef4444); }
+.stat-card:nth-child(4)::after { background: linear-gradient(90deg, #a78bfa, #f472b6); }
+
+.stat-val {
+  font-family: 'Orbitron', monospace;
+  font-size: 2rem;
+  font-weight: 900;
+  color: var(--white);
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+
+.stat-lbl { font-size: 0.68rem; color: var(--text3); text-transform: uppercase; letter-spacing: 0.15em; margin-top: 4px; font-family: 'JetBrains Mono', monospace; }
+
+.stat-icon { position: absolute; top: 14px; right: 14px; font-size: 1.5rem; opacity: 0.2; }
+
+/* WEEK BAR */
+.week-row {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 8px;
+}
+
+.week-day { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+
+.wday-name {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.58rem;
+  text-transform: uppercase;
+  color: var(--text3);
+}
+
+.wday-bar-wrap {
+  width: 100%;
+  height: 60px;
+  background: var(--bg2);
+  border-radius: 6px;
+  display: flex;
+  align-items: flex-end;
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+
+.wday-bar {
+  width: 100%;
+  background: linear-gradient(0deg, #3b82f6, #6366f1);
+  border-radius: 6px;
+  transition: height 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+  min-height: 0;
+  box-shadow: 0 -4px 12px rgba(99,130,246,0.4);
+}
+
+.wday-bar.today { background: linear-gradient(0deg, #10b981, #06b6d4); }
+
+.wday-hrs {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.6rem;
+  color: var(--text3);
+}
+
+/* SESSION LIST */
+.session-list { display: flex; flex-direction: column; }
+
+.sitem {
+  display: grid;
+  grid-template-columns: 4px 36px 1fr auto auto;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 18px;
+  border-bottom: 1px solid var(--border);
+  transition: background 0.15s;
+  animation: fadeSlide 0.3s ease;
+}
+
+@keyframes fadeSlide {
+  from { opacity: 0; transform: translateX(-14px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+.sitem:hover { background: rgba(255,255,255,0.02); }
+.sitem:last-child { border-bottom: none; }
+
+.sitem-bar { height: 36px; border-radius: 2px; }
+
+.sitem-emoji { font-size: 1.3rem; text-align: center; }
+
+.sitem-name { font-weight: 700; font-size: 0.9rem; color: var(--white); }
+.sitem-note { font-size: 0.75rem; color: var(--text3); margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 250px; }
+
+.sitem-dur {
+  font-family: 'Orbitron', monospace;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--white);
+  text-align: right;
+  white-space: nowrap;
+}
+
+.sitem-time { font-family: 'JetBrains Mono', monospace; font-size: 0.62rem; color: var(--text3); text-align: right; margin-top: 2px; }
+
+.sitem-del {
+  background: none;
+  border: 1px solid transparent;
+  color: var(--text3);
+  cursor: pointer;
+  border-radius: 6px;
+  padding: 4px 7px;
+  font-size: 0.8rem;
+  transition: all 0.15s;
+}
+.sitem-del:hover { border-color: var(--danger); color: var(--danger); background: rgba(239,68,68,0.08); }
+
+/* EMPTY STATE */
+.empty {
+  padding: 36px;
+  text-align: center;
+  color: var(--text3);
+}
+.empty-icon { font-size: 2.5rem; opacity: 0.3; margin-bottom: 10px; }
+.empty-txt { font-style: italic; font-size: 0.9rem; }
+
+/* SUBJECT BREAKDOWN */
+.breakdown { display: flex; flex-direction: column; gap: 10px; padding: 18px; }
+
+.bditem { display: flex; flex-direction: column; gap: 5px; }
+
+.bdhead { display: flex; justify-content: space-between; align-items: center; }
+.bdname { font-weight: 700; font-size: 0.82rem; }
+.bdhrs { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; color: var(--text3); }
+
+.bdtrack { height: 5px; background: var(--bg2); border-radius: 3px; overflow: hidden; }
+.bdfill { height: 100%; border-radius: 3px; transition: width 0.8s cubic-bezier(0.34,1.56,0.64,1); }
+
+/* RIGHT COLUMN */
+.right-col { display: flex; flex-direction: column; gap: 16px; }
+
+/* QUESTIONS TRACKER */
+.q-tracker { display: flex; flex-direction: column; gap: 10px; }
+
+.q-subject-row {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 12px;
+  border-radius: 8px;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  transition: border-color 0.2s;
+}
+
+.q-subject-row:hover { border-color: var(--border2); }
+
+.q-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+.q-name { font-size: 0.82rem; font-weight: 600; }
+
+.q-controls { display: flex; align-items: center; gap: 6px; }
+
+.q-val {
+  font-family: 'Orbitron', monospace;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--white);
+  min-width: 28px;
+  text-align: center;
+}
+
+.q-btn {
+  width: 22px; height: 22px;
+  border-radius: 6px;
+  border: 1px solid var(--border2);
+  background: var(--panel2);
+  color: var(--text2);
+  cursor: pointer;
+  font-size: 0.9rem;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.15s;
+  font-weight: 700;
+}
+
+.q-btn:hover { background: var(--glow); color: white; border-color: var(--glow); transform: scale(1.1); }
+
+.q-total-strip {
+  background: linear-gradient(135deg, rgba(59,130,246,0.15), rgba(99,102,241,0.15));
+  border: 1px solid rgba(99,179,237,0.2);
+  border-radius: 8px;
+  padding: 12px 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.q-total-lbl { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--text3); font-family: 'JetBrains Mono', monospace; }
+.q-total-val { font-family: 'Orbitron', monospace; font-size: 1.8rem; font-weight: 900; color: var(--white); }
+
+/* TODO */
+.todo-add { display: flex; gap: 8px; margin-bottom: 12px; }
+
+.todo-input {
+  flex: 1;
+  background: var(--bg2);
+  border: 1px solid var(--border2);
+  border-radius: 8px;
+  padding: 8px 12px;
+  color: var(--text);
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 0.88rem;
+  font-weight: 500;
+  outline: none;
+}
+
+.todo-input:focus { border-color: var(--glow); box-shadow: 0 0 0 3px rgba(59,130,246,0.1); }
+
+.todo-add-btn {
+  background: var(--glow);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 14px;
+  cursor: pointer;
+  font-size: 1.1rem;
+  font-weight: 700;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+
+.todo-add-btn:hover { background: #2563eb; transform: scale(1.05); }
+
+.todo-list { display: flex; flex-direction: column; gap: 6px; max-height: 260px; overflow-y: auto; }
+
+.todo-list::-webkit-scrollbar { width: 4px; }
+.todo-list::-webkit-scrollbar-track { background: var(--bg2); }
+.todo-list::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+
+.todo-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 12px;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  transition: all 0.2s;
+  animation: fadeSlide 0.25s ease;
+}
+
+.todo-item.done { opacity: 0.5; }
+.todo-item.done .todo-text { text-decoration: line-through; color: var(--text3); }
+
+.todo-check {
+  width: 18px; height: 18px;
+  border-radius: 5px;
+  border: 2px solid var(--border2);
+  cursor: pointer;
+  flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.7rem;
+  transition: all 0.15s;
+  color: white;
+}
+
+.todo-check.checked { background: var(--success); border-color: var(--success); }
+.todo-check:hover { border-color: var(--success); transform: scale(1.1); }
+
+.todo-text { flex: 1; font-size: 0.85rem; font-weight: 500; }
+
+.todo-subject-tag {
+  font-size: 0.62rem;
+  padding: 2px 7px;
+  border-radius: 20px;
+  font-weight: 700;
+  font-family: 'JetBrains Mono', monospace;
+  white-space: nowrap;
+}
+
+.todo-del {
+  background: none;
+  border: none;
+  color: var(--text3);
+  cursor: pointer;
+  font-size: 0.85rem;
+  padding: 2px 5px;
+  border-radius: 4px;
+  transition: all 0.15s;
+}
+.todo-del:hover { color: var(--danger); background: rgba(239,68,68,0.08); }
+
+/* PROGRESS RING */
+.progress-rings {
+  display: flex;
+  justify-content: space-around;
+  padding: 6px 0;
+}
+
+.pring-wrap { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+
+.pring-svg { width: 54px; height: 54px; transform: rotate(-90deg); }
+.pring-track { fill: none; stroke: rgba(255,255,255,0.05); stroke-width: 5; }
+.pring-fill { fill: none; stroke-width: 5; stroke-linecap: round; stroke-dasharray: 138; stroke-dashoffset: 138; transition: stroke-dashoffset 0.8s cubic-bezier(0.34,1.56,0.64,1); filter: drop-shadow(0 0 5px currentColor); }
+
+.pring-lbl { font-family: 'JetBrains Mono', monospace; font-size: 0.58rem; color: var(--text3); text-align: center; }
+
+/* PARTICLE BURST */
+.burst {
+  position: fixed;
+  pointer-events: none;
+  z-index: 9999;
+}
+
+.burst-dot {
+  position: absolute;
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  animation: burstOut 0.6s ease forwards;
+}
+
+@keyframes burstOut {
+  0% { transform: translate(0,0) scale(1); opacity: 1; }
+  100% { transform: translate(var(--tx), var(--ty)) scale(0); opacity: 0; }
+}
+
+/* TABS */
+.tabs-row { display: flex; border-bottom: 1px solid var(--border); }
+
+.tab {
+  padding: 11px 18px;
+  font-family: 'Orbitron', monospace;
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text3);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  transition: all 0.15s;
+}
+
+.tab.active { color: var(--glow2); border-bottom-color: var(--glow2); }
+.tab:hover:not(.active) { color: var(--text); }
+
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
+
+/* FLASH */
+.flash {
+  position: fixed;
+  bottom: 28px;
+  right: 28px;
+  background: var(--panel);
+  border: 1px solid var(--glow);
+  border-radius: 10px;
+  padding: 12px 18px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--white);
+  box-shadow: 0 8px 32px rgba(59,130,246,0.2);
+  transform: translateY(20px);
+  opacity: 0;
+  transition: all 0.3s cubic-bezier(0.34,1.56,0.64,1);
+  z-index: 999;
+  pointer-events: none;
+  font-family: 'Rajdhani', sans-serif;
+}
+
+.flash.show { transform: translateY(0); opacity: 1; }
+
+/* SCROLLBAR */
+.session-scroll { max-height: 280px; overflow-y: auto; }
+.session-scroll::-webkit-scrollbar { width: 4px; }
+.session-scroll::-webkit-scrollbar-track { background: var(--bg2); }
+.session-scroll::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+
+/* SMALL BTN */
+.btn-sm {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.65rem;
+  padding: 5px 10px;
+  border-radius: 6px;
+  border: 1px solid var(--border2);
+  background: var(--panel2);
+  color: var(--text2);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.btn-sm:hover { background: var(--bg3); color: var(--white); }
+
+.btn-danger-sm {
+  border-color: rgba(239,68,68,0.3);
+  color: rgba(239,68,68,0.7);
+}
+.btn-danger-sm:hover { background: rgba(239,68,68,0.1); color: var(--danger); }
+
+/* WORK DONE SECTION */
+.work-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
+
+.work-chip {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  background: var(--bg2);
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.work-chip.active { border-color: currentColor; background: rgba(255,255,255,0.05); }
+.work-chip:hover { transform: translateY(-1px); }
+
+.work-input-row { display: flex; gap: 8px; }
+
+.work-log-list { max-height: 160px; overflow-y: auto; display: flex; flex-direction: column; gap: 5px; margin-top: 10px; }
+
+.work-log-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 11px;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  font-size: 0.78rem;
+  animation: fadeSlide 0.25s ease;
+}
+
+.work-log-del { margin-left: auto; background: none; border: none; color: var(--text3); cursor: pointer; font-size: 0.8rem; }
+.work-log-del:hover { color: var(--danger); }
+
+/* RESPONSIVE */
+@media (max-width: 1200px) {
+  .main { grid-template-columns: 290px 1fr; }
+  .right-col { display: none; }
+}
+
+@media (max-width: 800px) {
+  .main { grid-template-columns: 1fr; }
+  .stats-row { grid-template-columns: 1fr 1fr; }
+}
+</style>
+</head>
+<body>
+<div class="bg-grid"></div>
+<div class="bg-orbs">
+  <div class="orb orb1"></div>
+  <div class="orb orb2"></div>
+  <div class="orb orb3"></div>
+</div>
+
+<div class="app">
+<!-- HEADER -->
+<header>
+  <div class="logo">
+    <div class="logo-icon">🧠</div>
+    <div>
+      <div class="logo-text">StudyOS</div>
+      <div class="logo-sub">Command Your Learning</div>
+    </div>
+  </div>
+  <div class="header-pills">
+    <div class="hpill">
+      <div class="hpill-dot" style="background:#3b82f6"></div>
+      <div><div class="hpill-val" id="hHrs">0.0</div><div class="hpill-lbl">Hrs Today</div></div>
+    </div>
+    <div class="hpill">
+      <div class="hpill-dot" style="background:#10b981"></div>
+      <div><div class="hpill-val" id="hQs">0</div><div class="hpill-lbl">Qs Done</div></div>
+    </div>
+    <div class="hpill">
+      <div class="hpill-dot" style="background:#f59e0b"></div>
+      <div><div class="hpill-val" id="hStreak">0🔥</div><div class="hpill-lbl">Day Streak</div></div>
+    </div>
+  </div>
+  <div class="header-date" id="headerDate"></div>
+</header>
+
+<!-- MAIN GRID -->
+<div class="main">
+
+  <!-- LEFT: SUBJECTS + TIMER + LOG -->
+  <div style="display:flex;flex-direction:column;gap:16px;">
+
+    <!-- SUBJECTS -->
+    <div class="panel">
+      <div class="panel-head">
+        <div class="panel-title"><span class="panel-icon">📚</span> Select Subject</div>
+      </div>
+      <div class="panel-body" style="padding:14px;">
+        <div class="subjects-grid" id="subjectGrid"></div>
+      </div>
+    </div>
+
+    <!-- STOPWATCH -->
+    <div class="panel">
+      <div class="panel-head">
+        <div class="panel-title"><span class="panel-icon">⏱</span> Stopwatch</div>
+        <div id="swSubjectBadge" style="font-size:0.7rem;font-family:'JetBrains Mono',monospace;color:var(--text3)">none selected</div>
+      </div>
+      <div class="panel-body" style="padding:12px 14px;">
+        <div class="stopwatch-wrap">
+          <div class="sw-ring-wrap">
+            <svg class="sw-svg" viewBox="0 0 220 220">
+              <circle class="sw-track" cx="110" cy="110" r="100"/>
+              <!-- Tick marks -->
+              <g id="tickMarks"></g>
+              <circle class="sw-progress" id="swRing" cx="110" cy="110" r="100" stroke="url(#swGrad)"/>
+              <defs>
+                <linearGradient id="swGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#3b82f6"/>
+                  <stop offset="100%" stop-color="#06b6d4"/>
+                </linearGradient>
+              </defs>
+            </svg>
+            <div class="sw-inner">
+              <div class="sw-time" id="swDisplay">00:00:00</div>
+              <div class="sw-subject-label" id="swLabel">READY</div>
+            </div>
+          </div>
+          <div class="sw-controls">
+            <button class="sw-btn sw-btn-start" onclick="startSW()">▶ START</button>
+            <button class="sw-btn sw-btn-stop" onclick="stopSW()">■ STOP</button>
+            <button class="sw-btn sw-btn-reset" onclick="resetSW()">↺</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- LOG SESSION -->
+    <div class="panel">
+      <div class="panel-head">
+        <div class="panel-title"><span class="panel-icon">➕</span> Log Session</div>
+      </div>
+      <div class="panel-body">
+        <div class="log-form">
+          <div>
+            <div class="field-lbl">Subject</div>
+            <select id="logSubject"></select>
+          </div>
+          <div class="row2">
+            <div>
+              <div class="field-lbl">Hours</div>
+              <input type="number" id="logHrs" min="0" max="24" value="0" placeholder="0">
+            </div>
+            <div>
+              <div class="field-lbl">Minutes</div>
+              <input type="number" id="logMins" min="0" max="59" value="30" placeholder="30">
+            </div>
+          </div>
+          <div>
+            <div class="field-lbl">Notes</div>
+            <textarea id="logNote" placeholder="What did you cover?"></textarea>
+          </div>
+          <button class="btn-log" onclick="logSession()">⚡ LOG SESSION</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- MIDDLE: STATS + SESSIONS + BREAKDOWN -->
+  <div class="middle">
+
+    <!-- STAT CARDS -->
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-icon">⏰</div>
+        <div class="stat-val" id="statTotalHrs">0.0</div>
+        <div class="stat-lbl">Total Hours</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">📝</div>
+        <div class="stat-val" id="statSessions">0</div>
+        <div class="stat-lbl">Sessions</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">❓</div>
+        <div class="stat-val" id="statQs">0</div>
+        <div class="stat-lbl">Qs Today</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">🔥</div>
+        <div class="stat-val" id="statStreak">0</div>
+        <div class="stat-lbl">Day Streak</div>
+      </div>
+    </div>
+
+    <!-- WEEK CHART -->
+    <div class="panel">
+      <div class="panel-head">
+        <div class="panel-title"><span class="panel-icon">📊</span> Weekly Activity</div>
+      </div>
+      <div class="panel-body">
+        <div class="week-row" id="weekRow"></div>
+      </div>
+    </div>
+
+    <!-- SUBJECT PROGRESS RINGS -->
+    <div class="panel">
+      <div class="panel-head">
+        <div class="panel-title"><span class="panel-icon">🎯</span> Subject Progress</div>
+      </div>
+      <div class="panel-body" style="padding:14px;">
+        <div class="progress-rings" id="progressRings"></div>
+      </div>
+    </div>
+
+    <!-- SESSIONS + BREAKDOWN TABS -->
+    <div class="panel" style="flex:1;">
+      <div class="tabs-row">
+        <div class="tab active" onclick="switchTab('sessions',this)">Sessions</div>
+        <div class="tab" onclick="switchTab('breakdown',this)">By Subject</div>
+        <div class="tab" onclick="switchTab('workdone',this)">Work Done</div>
+      </div>
+
+      <div id="tab-sessions" class="tab-panel active">
+        <div class="session-scroll session-list" id="sessionList"></div>
+        <div style="padding:10px 18px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;">
+          <button class="btn-sm btn-danger-sm" onclick="clearSessions()">Clear Sessions</button>
+        </div>
+      </div>
+
+      <div id="tab-breakdown" class="tab-panel">
+        <div class="breakdown" id="breakdownList"></div>
+      </div>
+
+      <div id="tab-workdone" class="tab-panel">
+        <div style="padding:18px;">
+          <div class="work-chips" id="workChips"></div>
+          <div class="work-input-row">
+            <input type="text" id="workInput" placeholder="Describe what you completed..." style="flex:1">
+            <button class="btn-log" style="width:auto;padding:9px 16px;font-size:0.62rem;" onclick="addWork()">ADD</button>
+          </div>
+          <div class="work-log-list" id="workLogList"></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- RIGHT: QUESTIONS + TODO -->
+  <div class="right-col">
+
+    <!-- QUESTIONS PER SUBJECT -->
+    <div class="panel">
+      <div class="panel-head">
+        <div class="panel-title"><span class="panel-icon">❓</span> Questions Done Today</div>
+        <button class="btn-sm" onclick="resetQs()">Reset</button>
+      </div>
+      <div class="panel-body" style="padding:12px 14px;">
+        <div class="q-total-strip" style="margin-bottom:12px;">
+          <div>
+            <div class="q-total-lbl">Total Today</div>
+          </div>
+          <div class="q-total-val" id="qTotalBig">0</div>
+        </div>
+        <div class="q-tracker" id="qTracker"></div>
+      </div>
+    </div>
+
+    <!-- TODO LIST -->
+    <div class="panel" style="flex:1;">
+      <div class="panel-head">
+        <div class="panel-title"><span class="panel-icon">✅</span> To-Do List</div>
+        <div style="display:flex;gap:6px;">
+          <button class="btn-sm" onclick="clearDoneTodos()">Clear Done</button>
+        </div>
+      </div>
+      <div class="panel-body" style="padding:14px;">
+        <div class="todo-add">
+          <input type="text" class="todo-input" id="todoInput" placeholder="Add task..." onkeydown="if(event.key==='Enter')addTodo()">
+          <select id="todoSubject" style="width:auto;padding:8px 10px;font-size:0.8rem;flex-shrink:0;min-width:80px;"></select>
+          <button class="todo-add-btn" onclick="addTodo()">+</button>
+        </div>
+        <div class="todo-list" id="todoList"></div>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+</div>
+
+<div class="flash" id="flash"></div>
+
+<script>
+// ══════════════════════════════════════════════════════════
+// DATA
+// ══════════════════════════════════════════════════════════
+
+const SUBJECTS = [
+  { id:'phy', name:'Physics',        emoji:'⚛️',  color:'var(--phy)',  hex:'#f472b6', short:'PHY' },
+  { id:'che', name:'Chemistry',      emoji:'🧪',  color:'var(--che)',  hex:'#a78bfa', short:'CHE' },
+  { id:'mat', name:'Mathematics',    emoji:'📐',  color:'var(--mat)',  hex:'#34d399', short:'MAT' },
+  { id:'his', name:'History',        emoji:'📜',  color:'var(--his)',  hex:'#fbbf24', short:'HIS' },
+  { id:'geo', name:'Geography',      emoji:'🌍',  color:'var(--geo)',  hex:'#60a5fa', short:'GEO' },
+  { id:'pol', name:'Polity',         emoji:'⚖️',  color:'var(--pol)',  hex:'#fb923c', short:'POL' },
+  { id:'eco', name:'Economics',      emoji:'📈',  color:'var(--eco)',  hex:'#4ade80', short:'ECO' },
+  { id:'cur', name:'Current Affairs',emoji:'📰',  color:'var(--cur)',  hex:'#f87171', short:'CUR' },
+];
+
+let data = {
+  sessions: [],
+  todos: [],
+  questions: {}, // { phy: 5, che: 3, ... } — resets daily
+  worklog: [],
+  qDate: ''
+};
+
+let selectedSubjectId = 'phy';
+
+function save() { localStorage.setItem('studyos_v2', JSON.stringify(data)); }
+
+function load() {
+  const raw = localStorage.getItem('studyos_v2');
+  if (raw) data = JSON.parse(raw);
+  // Reset questions if new day
+  const today = todayStr();
+  if (data.qDate !== today) {
+    data.questions = {};
+    data.qDate = today;
+    save();
+  }
+}
+
+function todayStr() { return new Date().toISOString().slice(0,10); }
+function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2,6); }
+function subjById(id) { return SUBJECTS.find(s => s.id === id); }
+
+// ══════════════════════════════════════════════════════════
+// INIT DOM
+// ══════════════════════════════════════════════════════════
+
+function initSubjectGrid() {
+  document.getElementById('subjectGrid').innerHTML = SUBJECTS.map(s => `
+    <div class="subject-card ${selectedSubjectId===s.id?'active':''}"
+      style="color:${s.hex}"
+      onclick="selectSubject('${s.id}', this)">
+      <div class="subj-emoji">${s.emoji}</div>
+      <div class="subj-name">${s.name}</div>
+      <div class="subj-hrs" id="subj-hrs-${s.id}">0h 0m</div>
+    </div>
+  `).join('');
+}
+
+function selectSubject(id, el) {
+  selectedSubjectId = id;
+  document.querySelectorAll('.subject-card').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  const s = subjById(id);
+  document.getElementById('swSubjectBadge').textContent = s.name;
+  document.getElementById('logSubject').value = id;
+  document.getElementById('swLabel').textContent = s.short;
+}
+
+function initSelects() {
+  const opts = SUBJECTS.map(s => `<option value="${s.id}">${s.emoji} ${s.name}</option>`).join('');
+  document.getElementById('logSubject').innerHTML = opts;
+  document.getElementById('todoSubject').innerHTML = opts;
+}
+
+function initWorkChips() {
+  document.getElementById('workChips').innerHTML = SUBJECTS.map(s => `
+    <div class="work-chip" style="color:${s.hex}" onclick="this.classList.toggle('active')" data-subj="${s.id}">
+      ${s.emoji} ${s.short}
+    </div>
+  `).join('');
+}
+
+// ══════════════════════════════════════════════════════════
+// STOPWATCH
+// ══════════════════════════════════════════════════════════
+
+let swInterval = null;
+let swSeconds = 0;
+let swRunning = false;
+let swStart = null;
+
+// Draw tick marks
+function drawTicks() {
+  const g = document.getElementById('tickMarks');
+  let html = '';
+  for (let i = 0; i < 60; i++) {
+    const angle = (i / 60) * 360;
+    const rad = (angle - 90) * Math.PI / 180;
+    const r1 = i % 5 === 0 ? 86 : 91;
+    const r2 = 96;
+    const x1 = 110 + r1 * Math.cos(rad);
+    const y1 = 110 + r1 * Math.sin(rad);
+    const x2 = 110 + r2 * Math.cos(rad);
+    const y2 = 110 + r2 * Math.sin(rad);
+    const w = i % 5 === 0 ? 2 : 1;
+    const op = i % 5 === 0 ? 0.5 : 0.2;
+    html += `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="#63b3ed" stroke-width="${w}" opacity="${op}"/>`;
+  }
+  g.innerHTML = html;
+}
+
+function updateSWDisplay() {
+  const h = String(Math.floor(swSeconds / 3600)).padStart(2,'0');
+  const m = String(Math.floor((swSeconds % 3600) / 60)).padStart(2,'0');
+  const s = String(swSeconds % 60).padStart(2,'0');
+  document.getElementById('swDisplay').textContent = `${h}:${m}:${s}`;
+
+  // Ring animation — one full rotation = 60 minutes
+  const totalSecs = swSeconds;
+  const progress = (totalSecs % 3600) / 3600;
+  const offset = 628 - progress * 628;
+  document.getElementById('swRing').style.strokeDashoffset = offset;
+
+  // Color shifts with time
+  const hue = (totalSecs / 3600) * 360;
+}
+
+function startSW() {
+  if (swRunning) return;
+  swRunning = true;
+  swStart = Date.now() - swSeconds * 1000;
+  swInterval = setInterval(() => {
+    swSeconds = Math.floor((Date.now() - swStart) / 1000);
+    updateSWDisplay();
+    document.getElementById('swDisplay').classList.add('running');
+    document.getElementById('swLabel').textContent = subjById(selectedSubjectId)?.short + ' — LIVE';
+  }, 500);
+  flash('⏱ Timer started!');
+}
+
+function stopSW() {
+  if (!swRunning) return;
+  clearInterval(swInterval);
+  swRunning = false;
+  document.getElementById('swDisplay').classList.remove('running');
+  const mins = Math.round(swSeconds / 60);
+  if (mins < 1) { flash('Too short to log (< 1 min)'); return; }
+  data.sessions.unshift({
+    id: uid(), subjectId: selectedSubjectId,
+    minutes: mins, note: 'Timed session',
+    date: new Date().toISOString()
+  });
+  save(); renderAll();
+  burst();
+  flash(`✅ ${mins} min logged for ${subjById(selectedSubjectId).name}!`);
+}
+
+function resetSW() {
+  clearInterval(swInterval);
+  swRunning = false;
+  swSeconds = 0;
+  updateSWDisplay();
+  document.getElementById('swDisplay').classList.remove('running');
+  document.getElementById('swLabel').textContent = 'READY';
+}
+
+// ══════════════════════════════════════════════════════════
+// SESSION LOG
+// ══════════════════════════════════════════════════════════
+
+function logSession() {
+  const subjectId = document.getElementById('logSubject').value;
+  const hrs = parseInt(document.getElementById('logHrs').value) || 0;
+  const mins = parseInt(document.getElementById('logMins').value) || 0;
+  const note = document.getElementById('logNote').value.trim();
+  const total = hrs * 60 + mins;
+  if (total < 1) return flash('⚠ Enter at least 1 minute');
+  data.sessions.unshift({ id: uid(), subjectId, minutes: total, note, date: new Date().toISOString() });
+  save();
+  document.getElementById('logNote').value = '';
+  document.getElementById('logHrs').value = '0';
+  document.getElementById('logMins').value = '30';
+  renderAll();
+  burst();
+  flash(`✅ Session logged! (${subjById(subjectId).name})`);
+}
+
+function deleteSession(id) {
+  data.sessions = data.sessions.filter(s => s.id !== id);
+  save(); renderAll();
+}
+
+function clearSessions() {
+  if (!confirm('Clear all sessions?')) return;
+  data.sessions = [];
+  save(); renderAll();
+}
+
+// ══════════════════════════════════════════════════════════
+// QUESTIONS
+// ══════════════════════════════════════════════════════════
+
+function changeQ(id, delta) {
+  data.questions[id] = Math.max(0, (data.questions[id] || 0) + delta);
+  save();
+  renderQs();
+  renderStats();
+  if (delta > 0) minibursti(id);
+}
+
+function resetQs() {
+  data.questions = {};
+  save(); renderQs(); renderStats();
+}
+
+// ══════════════════════════════════════════════════════════
+// TODO
+// ══════════════════════════════════════════════════════════
+
+function addTodo() {
+  const text = document.getElementById('todoInput').value.trim();
+  const subjectId = document.getElementById('todoSubject').value;
+  if (!text) return;
+  data.todos.unshift({ id: uid(), text, subjectId, done: false, date: new Date().toISOString() });
+  document.getElementById('todoInput').value = '';
+  save(); renderTodos();
+  flash('📋 Task added!');
+}
+
+function toggleTodo(id) {
+  const t = data.todos.find(x => x.id === id);
+  if (t) { t.done = !t.done; save(); renderTodos(); }
+  if (t && t.done) burst();
+}
+
+function deleteTodo(id) {
+  data.todos = data.todos.filter(x => x.id !== id);
+  save(); renderTodos();
+}
+
+function clearDoneTodos() {
+  data.todos = data.todos.filter(t => !t.done);
+  save(); renderTodos();
+}
+
+// ══════════════════════════════════════════════════════════
+// WORK LOG
+// ══════════════════════════════════════════════════════════
+
+function addWork() {
+  const text = document.getElementById('workInput').value.trim();
+  if (!text) return;
+  const activeChips = [...document.querySelectorAll('.work-chip.active')].map(c => c.dataset.subj);
+  const subjId = activeChips[0] || selectedSubjectId;
+  data.worklog.unshift({ id: uid(), text, subjectId: subjId, date: new Date().toISOString() });
+  document.getElementById('workInput').value = '';
+  save(); renderWorkLog();
+  flash('✍ Work logged!');
+}
+
+function deleteWork(id) {
+  data.worklog = data.worklog.filter(x => x.id !== id);
+  save(); renderWorkLog();
+}
+
+// ══════════════════════════════════════════════════════════
+// RENDERS
+// ══════════════════════════════════════════════════════════
+
+function renderAll() {
+  renderSessions();
+  renderBreakdown();
+  renderWeek();
+  renderStats();
+  renderQs();
+  renderTodos();
+  renderWorkLog();
+  renderSubjectHrs();
+  renderProgressRings();
+}
+
+function renderSessions() {
+  const el = document.getElementById('sessionList');
+  if (!data.sessions.length) {
+    el.innerHTML = `<div class="empty"><div class="empty-icon">📭</div><div class="empty-txt">No sessions yet. Start studying!</div></div>`;
+    return;
+  }
+  el.innerHTML = data.sessions.slice(0,40).map(s => {
+    const subj = subjById(s.subjectId);
+    if (!subj) return '';
+    const h = Math.floor(s.minutes/60), m = s.minutes%60;
+    const dur = h > 0 ? `${h}h ${m}m` : `${m}m`;
+    const d = new Date(s.date);
+    const timeStr = d.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'});
+    const dateStr = d.toLocaleDateString('en-US',{month:'short',day:'numeric'});
+    return `
+      <div class="sitem">
+        <div class="sitem-bar" style="background:${subj.hex}"></div>
+        <div class="sitem-emoji">${subj.emoji}</div>
+        <div>
+          <div class="sitem-name">${subj.name}</div>
+          <div class="sitem-note">${s.note || '—'}</div>
+        </div>
+        <div>
+          <div class="sitem-dur">${dur}</div>
+          <div class="sitem-time">${dateStr} ${timeStr}</div>
+        </div>
+        <button class="sitem-del" onclick="deleteSession('${s.id}')">✕</button>
+      </div>
+    `;
+  }).join('');
+}
+
+function renderBreakdown() {
+  const totals = {};
+  SUBJECTS.forEach(s => totals[s.id] = 0);
+  data.sessions.forEach(s => { totals[s.subjectId] = (totals[s.subjectId]||0) + s.minutes; });
+  const max = Math.max(...Object.values(totals), 1);
+  const el = document.getElementById('breakdownList');
+  if (Object.values(totals).every(v => v===0)) {
+    el.innerHTML = `<div class="empty"><div class="empty-icon">📊</div><div class="empty-txt">Nothing yet</div></div>`;
+    return;
+  }
+  el.innerHTML = SUBJECTS.filter(s => totals[s.id] > 0).sort((a,b) => totals[b.id]-totals[a.id]).map(s => {
+    const mins = totals[s.id];
+    const hrs = (mins/60).toFixed(1);
+    const pct = Math.round((mins/max)*100);
+    return `
+      <div class="bditem">
+        <div class="bdhead">
+          <span class="bdname" style="color:${s.hex}">${s.emoji} ${s.name}</span>
+          <span class="bdhrs">${hrs}h</span>
+        </div>
+        <div class="bdtrack"><div class="bdfill" style="width:${pct}%;background:${s.hex};box-shadow:0 0 8px ${s.hex}60"></div></div>
+      </div>
+    `;
+  }).join('');
+}
+
+function renderSubjectHrs() {
+  const totals = {};
+  data.sessions.forEach(s => { totals[s.subjectId] = (totals[s.subjectId]||0) + s.minutes; });
+  SUBJECTS.forEach(s => {
+    const el = document.getElementById(`subj-hrs-${s.id}`);
+    if (el) {
+      const mins = totals[s.id] || 0;
+      const h = Math.floor(mins/60), m = mins%60;
+      el.textContent = `${h}h ${m}m`;
+    }
+  });
+}
+
+function renderWeek() {
+  const el = document.getElementById('weekRow');
+  const days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  const today = new Date();
+
+  const sessionsByDate = {};
+  data.sessions.forEach(s => {
+    const d = s.date.slice(0,10);
+    sessionsByDate[d] = (sessionsByDate[d]||0) + s.minutes;
+  });
+
+  const maxMins = Math.max(...Object.values(sessionsByDate), 1);
+
+  let html = '';
+  for (let i = 6; i >= 0; i--) {
+    const d = new Date(today);
+    d.setDate(today.getDate() - i);
+    const dateStr = d.toISOString().slice(0,10);
+    const mins = sessionsByDate[dateStr] || 0;
+    const pct = Math.min((mins / Math.max(maxMins, 120)) * 100, 100);
+    const isToday = d.toDateString() === today.toDateString();
+    const hrs = (mins/60).toFixed(1);
+    html += `
+      <div class="week-day">
+        <div class="wday-name">${days[d.getDay()]}</div>
+        <div class="wday-bar-wrap">
+          <div class="wday-bar ${isToday?'today':''}" style="height:${pct}%"></div>
+        </div>
+        <div class="wday-hrs">${mins>0?hrs+'h':''}</div>
+      </div>
+    `;
+  }
+  el.innerHTML = html;
+}
+
+function renderProgressRings() {
+  const totals = {};
+  data.sessions.forEach(s => { totals[s.subjectId] = (totals[s.subjectId]||0) + s.minutes; });
+  const max = Math.max(...Object.values(totals), 1);
+
+  document.getElementById('progressRings').innerHTML = SUBJECTS.map(s => {
+    const mins = totals[s.id] || 0;
+    const pct = mins / max;
+    const offset = Math.round(138 - pct * 138);
+    return `
+      <div class="pring-wrap">
+        <svg class="pring-svg" viewBox="0 0 54 54">
+          <circle class="pring-track" cx="27" cy="27" r="22"/>
+          <circle class="pring-fill" cx="27" cy="27" r="22"
+            stroke="${s.hex}"
+            style="stroke-dashoffset:${offset};color:${s.hex}"/>
+        </svg>
+        <div class="pring-lbl">${s.short}</div>
+      </div>
+    `;
+  }).join('');
+}
+
+function renderStats() {
+  const totalMins = data.sessions.reduce((a,s) => a+s.minutes, 0);
+  const todayMins = data.sessions.filter(s => s.date.slice(0,10)===todayStr()).reduce((a,s)=>a+s.minutes,0);
+  const totalQs = Object.values(data.questions).reduce((a,v)=>a+v,0);
+
+  document.getElementById('statTotalHrs').textContent = (totalMins/60).toFixed(1);
+  document.getElementById('statSessions').textContent = data.sessions.length;
+  document.getElementById('statQs').textContent = totalQs;
+  document.getElementById('hHrs').textContent = (todayMins/60).toFixed(1);
+  document.getElementById('hQs').textContent = totalQs;
+
+  // Streak
+  const studied = new Set(data.sessions.map(s => s.date.slice(0,10)));
+  let streak = 0;
+  const d = new Date();
+  while (studied.has(d.toISOString().slice(0,10))) {
+    streak++;
+    d.setDate(d.getDate()-1);
+  }
+  document.getElementById('statStreak').textContent = streak;
+  document.getElementById('hStreak').textContent = streak + (streak > 0 ? '🔥' : '');
+}
+
+function renderQs() {
+  const totalQs = Object.values(data.questions).reduce((a,v)=>a+v,0);
+  document.getElementById('qTotalBig').textContent = totalQs;
+
+  document.getElementById('qTracker').innerHTML = SUBJECTS.map(s => `
+    <div class="q-subject-row">
+      <div class="q-dot" style="background:${s.hex}"></div>
+      <div class="q-name">${s.emoji} ${s.short}</div>
+      <div class="q-controls">
+        <button class="q-btn" onclick="changeQ('${s.id}',-1)">−</button>
+        <div class="q-val" id="qval-${s.id}">${data.questions[s.id]||0}</div>
+        <button class="q-btn" onclick="changeQ('${s.id}',1)">+</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderTodos() {
+  const el = document.getElementById('todoList');
+  const today = todayStr();
+  const todayTodos = data.todos.filter(t => t.date.slice(0,10)===today);
+  const older = data.todos.filter(t => t.date.slice(0,10)!==today);
+  const all = [...todayTodos, ...older];
+  if (!all.length) {
+    el.innerHTML = `<div class="empty" style="padding:20px"><div class="empty-icon">✅</div><div class="empty-txt">All clear!</div></div>`;
+    return;
+  }
+  el.innerHTML = all.map(t => {
+    const s = subjById(t.subjectId);
+    return `
+      <div class="todo-item ${t.done?'done':''}">
+        <div class="todo-check ${t.done?'checked':''}" onclick="toggleTodo('${t.id}')">
+          ${t.done?'✓':''}
+        </div>
+        <div class="todo-text">${t.text}</div>
+        ${s ? `<span class="todo-subject-tag" style="background:${s.hex}22;color:${s.hex}">${s.short}</span>` : ''}
+        <button class="todo-del" onclick="deleteTodo('${t.id}')">✕</button>
+      </div>
+    `;
+  }).join('');
+}
+
+function renderWorkLog() {
+  const el = document.getElementById('workLogList');
+  if (!data.worklog.length) {
+    el.innerHTML = `<div style="text-align:center;padding:20px;color:var(--text3);font-style:italic;font-size:0.82rem">Log your completed work here</div>`;
+    return;
+  }
+  el.innerHTML = data.worklog.slice(0,20).map(w => {
+    const s = subjById(w.subjectId);
+    const d = new Date(w.date);
+    const timeStr = d.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'});
+    return `
+      <div class="work-log-item">
+        ${s ? `<span style="font-size:1.1rem">${s.emoji}</span>` : ''}
+        <span style="flex:1;font-size:0.8rem">${w.text}</span>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:0.6rem;color:var(--text3)">${timeStr}</span>
+        <button class="work-log-del" onclick="deleteWork('${w.id}')">✕</button>
+      </div>
+    `;
+  }).join('');
+}
+
+// ══════════════════════════════════════════════════════════
+// TABS
+// ══════════════════════════════════════════════════════════
+
+function switchTab(name, el) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('tab-'+name).classList.add('active');
+}
+
+// ══════════════════════════════════════════════════════════
+// FLASH
+// ══════════════════════════════════════════════════════════
+
+function flash(msg) {
+  const el = document.getElementById('flash');
+  el.textContent = msg;
+  el.classList.add('show');
+  setTimeout(() => el.classList.remove('show'), 2600);
+}
+
+// ══════════════════════════════════════════════════════════
+// PARTICLE BURST
+// ══════════════════════════════════════════════════════════
+
+function burst(x, y) {
+  x = x || window.innerWidth / 2;
+  y = y || window.innerHeight / 2;
+  const colors = ['#3b82f6','#10b981','#f59e0b','#ef4444','#a78bfa','#06b6d4'];
+  const container = document.createElement('div');
+  container.className = 'burst';
+  container.style.left = x + 'px';
+  container.style.top = y + 'px';
+  for (let i = 0; i < 16; i++) {
+    const dot = document.createElement('div');
+    dot.className = 'burst-dot';
+    const angle = (i / 16) * 360;
+    const dist = 40 + Math.random() * 60;
+    const rad = angle * Math.PI / 180;
+    dot.style.setProperty('--tx', Math.cos(rad) * dist + 'px');
+    dot.style.setProperty('--ty', Math.sin(rad) * dist + 'px');
+    dot.style.background = colors[Math.floor(Math.random()*colors.length)];
+    container.appendChild(dot);
+  }
+  document.body.appendChild(container);
+  setTimeout(() => container.remove(), 700);
+}
+
+function minibursti(subjId) {
+  const el = document.getElementById(`qval-${subjId}`);
+  if (!el) return;
+  const rect = el.getBoundingClientRect();
+  burst(rect.left + rect.width/2, rect.top + rect.height/2);
+}
+
+// ══════════════════════════════════════════════════════════
+// DATE
+// ══════════════════════════════════════════════════════════
+
+function updateDate() {
+  const now = new Date();
+  const opts = { weekday:'long', year:'numeric', month:'long', day:'numeric' };
+  const time = now.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+  document.getElementById('headerDate').innerHTML = now.toLocaleDateString('en-US',opts) + '<br>' + time;
+}
+
+// ══════════════════════════════════════════════════════════
+// BOOT
+// ══════════════════════════════════════════════════════════
+
+load();
+initSubjectGrid();
+initSelects();
+initWorkChips();
+drawTicks();
+renderAll();
+updateDate();
+setInterval(updateDate, 1000);
+
+// Keyboard shortcut: Enter in workInput
+document.getElementById('workInput').addEventListener('keydown', e => {
+  if (e.key === 'Enter') addWork();
+});
+
+// Animate progress rings on load
+setTimeout(() => {
+  document.querySelectorAll('.pring-fill').forEach(el => {
+    el.style.transition = 'stroke-dashoffset 1s cubic-bezier(0.34,1.56,0.64,1)';
+  });
+  renderProgressRings();
+}, 100);
+
+// Animate week bars on load
+setTimeout(() => {
+  document.querySelectorAll('.wday-bar').forEach(b => {
+    b.style.transition = 'height 0.8s cubic-bezier(0.34,1.56,0.64,1)';
+  });
+  renderWeek();
+}, 200);
+
+</script>
+</body>
+</html>
