@@ -225,6 +225,8 @@ select option{background:var(--bg2)}
 .vb-date{font-family:'Rajdhani',sans-serif;font-size:1.1rem;font-weight:700;color:var(--warn)}
 .vb-close{font-family:'Rajdhani',sans-serif;font-size:0.75rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:5px 14px;border:1px solid rgba(251,191,36,0.4);border-radius:6px;background:transparent;color:var(--warn);cursor:pointer;transition:all 0.2s}
 .vb-close:hover{background:rgba(251,191,36,0.1)}
+.vb-download{font-family:'Rajdhani',sans-serif;font-size:0.75rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:5px 14px;border:1px solid rgba(52,211,153,0.5);border-radius:6px;background:rgba(52,211,153,0.1);color:var(--glow3);cursor:pointer;transition:all 0.2s}
+.vb-download:hover{background:rgba(52,211,153,0.2);box-shadow:0 0 16px rgba(52,211,153,0.2)}
 
 /* Calendar modal */
 .cal-overlay{display:none;position:fixed;inset:0;background:rgba(4,6,15,0.8);backdrop-filter:blur(6px);z-index:200;align-items:center;justify-content:center}
@@ -308,7 +310,10 @@ select option{background:var(--bg2)}
     <div class="vb-label">📅 Viewing Progress For</div>
     <div class="vb-date" id="vbDateLabel">—</div>
   </div>
-  <button class="vb-close" onclick="exitViewMode()">✕ Back to Today</button>
+  <div style="display:flex;gap:10px;align-items:center">
+    <button class="vb-download" onclick="downloadSummary(viewingDate)">⬇ Download Summary</button>
+    <button class="vb-close" onclick="exitViewMode()">✕ Back to Today</button>
+  </div>
 </div>
 
 <div class="app">
@@ -438,7 +443,10 @@ select option{background:var(--bg2)}
     <div class="card">
       <div class="card-head">
         <span class="card-label">📅 This Week</span>
-        <button class="btn-sm" onclick="openCalendar()" style="border-color:rgba(56,189,248,0.3);color:var(--glow)">📆 View Any Day</button>
+        <div style="display:flex;gap:6px">
+          <button class="btn-sm" onclick="downloadSummary(today())" style="color:var(--glow3);border-color:rgba(52,211,153,0.4)">⬇ Today's Summary</button>
+          <button class="btn-sm" onclick="openCalendar()" style="border-color:rgba(56,189,248,0.3);color:var(--glow)">📆 View Any Day</button>
+        </div>
       </div>
       <div class="card-body" style="padding:14px 18px">
         <div class="week-row" id="weekRow"></div>
@@ -449,7 +457,10 @@ select option{background:var(--bg2)}
     <div class="day-report card" id="dayReport">
       <div class="dr-head">
         <div class="dr-title" id="drTitle">📅 Day Report</div>
-        <button class="btn-icon" onclick="exitViewMode()">✕</button>
+        <div style="display:flex;gap:8px">
+          <button class="btn-sm" onclick="downloadSummary(viewingDate)" style="color:var(--glow3);border-color:rgba(52,211,153,0.4)">⬇ Download</button>
+          <button class="btn-icon" onclick="exitViewMode()">✕</button>
+        </div>
       </div>
       <div class="dr-stats" id="drStats"></div>
       <div class="dr-section-title">Subject Breakdown</div>
@@ -1149,6 +1160,245 @@ function renderAll() {
   renderStats();
   renderTodos();
   renderBreakdown();
+}
+
+// ─── DOWNLOAD SUMMARY ────────────────────────────────────
+function downloadSummary(dateStr) {
+  if (!dateStr) dateStr = today();
+
+  const sessions = data.sessions.filter(s => s.date.slice(0,10) === dateStr);
+  const todos    = data.todos.filter(t => t.date.slice(0,10) === dateStr);
+  const totalMins = sessions.reduce((a,b) => a + b.minutes, 0);
+  const totalQs   = sessions.reduce((a,b) => a + (b.questions||0), 0);
+  const doneTasks = todos.filter(t => t.done).length;
+
+  // Subject totals
+  const subjMins = {}, subjQs = {};
+  sessions.forEach(s => {
+    subjMins[s.subjectId] = (subjMins[s.subjectId]||0) + s.minutes;
+    subjQs[s.subjectId]   = (subjQs[s.subjectId]||0)   + (s.questions||0);
+  });
+  const maxMins = Math.max(...Object.values(subjMins), 1);
+
+  const dateObj  = new Date(dateStr + 'T12:00:00');
+  const dayLabel = dateObj.toLocaleDateString('en-IN', {weekday:'long', day:'numeric', month:'long', year:'numeric'});
+  const dayShort = dateObj.toLocaleDateString('en-IN', {day:'2-digit', month:'short', year:'numeric'});
+
+  // Streak calc
+  const sd = new Set(data.sessions.filter(s=>s.minutes>0).map(s=>s.date.slice(0,10)));
+  let streak = 0;
+  const dd = new Date();
+  while(sd.has(dd.toISOString().slice(0,10))){streak++;dd.setDate(dd.getDate()-1);}
+
+  // All-time totals
+  const allMins = data.sessions.reduce((a,b)=>a+b.minutes,0);
+  const allQs   = data.sessions.reduce((a,b)=>a+(b.questions||0),0);
+
+  // Subject rows HTML
+  const subjRowsHTML = SUBJECTS.filter(s=>subjMins[s.id]).sort((a,b)=>subjMins[b.id]-subjMins[a.id]).map(s => {
+    const h   = Math.floor(subjMins[s.id]/60), m = subjMins[s.id]%60;
+    const dur = h > 0 ? `${h}h ${m}m` : `${m}m`;
+    const pct = Math.round((subjMins[s.id]/maxMins)*100);
+    const qs  = subjQs[s.id] ? `<span style="font-size:11px;background:rgba(251,191,36,0.15);color:#d4a00a;padding:2px 8px;border-radius:20px;font-weight:700">${subjQs[s.id]} Q</span>` : '';
+    return `
+      <div style="margin-bottom:14px">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+          <div style="display:flex;align-items:center;gap:8px">
+            <div style="width:10px;height:10px;border-radius:50%;background:${s.color};box-shadow:0 0 6px ${s.color}80;flex-shrink:0"></div>
+            <span style="font-weight:700;font-size:13px;color:#1a2540">${s.name}</span>
+            ${qs}
+          </div>
+          <span style="font-family:monospace;font-size:13px;font-weight:700;color:#1a2540">${dur}</span>
+        </div>
+        <div style="height:8px;background:#e8f0fe;border-radius:4px;overflow:hidden">
+          <div style="height:100%;width:${pct}%;background:linear-gradient(90deg,${s.color}cc,${s.color});border-radius:4px;transition:width 0.6s"></div>
+        </div>
+      </div>`;
+  }).join('');
+
+  // Sessions HTML
+  const sessionsHTML = sessions.length ? sessions.map(s => {
+    const subj = SUBJECTS.find(x=>x.id===s.subjectId); if(!subj) return '';
+    const h=Math.floor(s.minutes/60), m=s.minutes%60;
+    const dur=h>0?`${h}h ${m}m`:`${m}m`;
+    const t=new Date(s.date).toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});
+    return `
+      <div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid #e8f0fe">
+        <div style="width:4px;height:40px;border-radius:2px;background:${subj.color};flex-shrink:0"></div>
+        <div style="flex:1">
+          <div style="font-weight:700;font-size:13px;color:${subj.color}">${subj.icon} ${subj.name}</div>
+          <div style="font-size:11px;color:#64748b;margin-top:2px">${s.note||'—'}${s.questions?` · ${s.questions} questions`:''}</div>
+        </div>
+        <div style="text-align:right">
+          <div style="font-family:monospace;font-weight:700;font-size:13px;color:#1a2540">${dur}</div>
+          <div style="font-size:10px;color:#94a3b8;margin-top:1px">${t}</div>
+        </div>
+      </div>`;
+  }).join('') : '<div style="color:#94a3b8;font-style:italic;font-size:13px;padding:12px 0">No sessions logged.</div>';
+
+  // Tasks HTML
+  const pendingTasks = todos.filter(t=>!t.done);
+  const completedTasks = todos.filter(t=>t.done);
+  const taskItem = t => {
+    const s = SUBJECTS.find(x=>x.id===t.subjectId);
+    const prioColor = t.priority==='high'?'#ef4444':t.priority==='low'?'#10b981':'#94a3b8';
+    return `<div style="display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid #f1f5f9">
+      <div style="width:16px;height:16px;border-radius:4px;border:2px solid ${t.done?'#10b981':prioColor};background:${t.done?'#10b981':'transparent'};display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:10px;color:white;font-weight:900">${t.done?'✓':''}</div>
+      <span style="flex:1;font-size:12px;color:${t.done?'#94a3b8':'#1a2540'};${t.done?'text-decoration:line-through':''}">${t.text}</span>
+      ${s?`<span style="font-size:10px;color:${s.color};background:${s.color}18;padding:1px 7px;border-radius:20px;font-weight:700">${s.name}</span>`:''}
+      <span style="font-size:10px">${t.priority==='high'?'🔴':t.priority==='low'?'🟢':'⚪'}</span>
+    </div>`;
+  };
+  const tasksHTML = todos.length
+    ? (completedTasks.length ? `<div style="font-size:10px;text-transform:uppercase;letter-spacing:0.1em;color:#10b981;font-weight:700;margin-bottom:4px">Completed</div>${completedTasks.map(taskItem).join('')}` : '')
+    + (pendingTasks.length   ? `<div style="font-size:10px;text-transform:uppercase;letter-spacing:0.1em;color:#94a3b8;font-weight:700;margin-top:10px;margin-bottom:4px">Pending</div>${pendingTasks.map(taskItem).join('')}` : '')
+    : '<div style="color:#94a3b8;font-style:italic;font-size:13px;padding:12px 0">No tasks this day.</div>';
+
+  // Grade-level emoji based on study hours
+  const hrsNum = totalMins/60;
+  const grade = hrsNum >= 8 ? '🏆 Outstanding' : hrsNum >= 6 ? '⭐ Excellent' : hrsNum >= 4 ? '💪 Good' : hrsNum >= 2 ? '📘 Fair' : hrsNum > 0 ? '🌱 Getting Started' : '😴 Rest Day';
+
+  const noDataMsg = totalMins === 0 && todos.length === 0
+    ? `<div style="text-align:center;padding:40px;color:#94a3b8;font-size:15px;font-style:italic">No activity recorded for this day.</div>` : '';
+
+  // ── Build the full HTML document ──────────────────────────
+  const html = `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Study Summary — ${dayShort}</title>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600;700&family=Orbitron:wght@700;900&family=Nunito:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Nunito',sans-serif;background:#f0f4ff;color:#1a2540;min-height:100vh;padding:0}
+  @media print {
+    body{background:#fff}
+    .no-print{display:none!important}
+    .page{box-shadow:none!important;margin:0!important;border-radius:0!important;max-width:100%!important}
+  }
+</style>
+</head>
+<body>
+
+<!-- PRINT BUTTON (hidden on print) -->
+<div class="no-print" style="background:#1a2540;padding:12px 32px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 2px 20px rgba(0,0,0,0.3)">
+  <div style="font-family:'Orbitron',monospace;font-size:0.85rem;color:#38bdf8;letter-spacing:0.08em">⚡ STUDYVAULT PRO — DAY SUMMARY</div>
+  <div style="display:flex;gap:10px">
+    <button onclick="window.print()" style="font-family:'Rajdhani',sans-serif;font-size:0.8rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:8px 20px;background:linear-gradient(135deg,rgba(56,189,248,0.25),rgba(129,140,248,0.15));border:1px solid rgba(56,189,248,0.5);border-radius:6px;color:#38bdf8;cursor:pointer">🖨 Print / Save PDF</button>
+    <button onclick="window.close()" style="font-family:'Rajdhani',sans-serif;font-size:0.8rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:8px 20px;background:transparent;border:1px solid rgba(255,255,255,0.15);border-radius:6px;color:#8899bb;cursor:pointer">✕ Close</button>
+  </div>
+</div>
+
+<div class="page" style="max-width:760px;margin:32px auto;background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 20px 60px rgba(26,37,64,0.12)">
+
+  <!-- HEADER BANNER -->
+  <div style="background:linear-gradient(135deg,#0f1a30 0%,#1a2540 60%,#0d2040 100%);padding:36px 40px;position:relative;overflow:hidden">
+    <!-- Decorative circles -->
+    <div style="position:absolute;top:-40px;right:-40px;width:180px;height:180px;border-radius:50%;background:rgba(56,189,248,0.06);border:1px solid rgba(56,189,248,0.1)"></div>
+    <div style="position:absolute;top:20px;right:20px;width:100px;height:100px;border-radius:50%;background:rgba(129,140,248,0.05);border:1px solid rgba(129,140,248,0.1)"></div>
+    <div style="position:absolute;bottom:-20px;left:160px;width:120px;height:120px;border-radius:50%;background:rgba(52,211,153,0.04);border:1px solid rgba(52,211,153,0.08)"></div>
+
+    <div style="position:relative;z-index:1">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:16px">
+        <div>
+          <div style="font-family:'Rajdhani',sans-serif;font-size:0.65rem;letter-spacing:0.3em;text-transform:uppercase;color:rgba(56,189,248,0.6);margin-bottom:6px">DAILY STUDY REPORT</div>
+          <div style="font-family:'Orbitron',monospace;font-size:1.6rem;font-weight:900;color:#fff;letter-spacing:0.02em;line-height:1.1">${dayLabel.split(',')[0].toUpperCase()}</div>
+          <div style="font-family:'Orbitron',monospace;font-size:0.9rem;font-weight:700;color:#38bdf8;margin-top:4px;letter-spacing:0.05em">${dayShort}</div>
+        </div>
+        <div style="text-align:right">
+          <div style="font-size:1.8rem;margin-bottom:4px">${grade.split(' ')[0]}</div>
+          <div style="font-family:'Rajdhani',sans-serif;font-size:0.78rem;color:rgba(255,255,255,0.6);letter-spacing:0.05em">${grade.split(' ').slice(1).join(' ')}</div>
+          <div style="margin-top:8px;font-family:'Orbitron',monospace;font-size:0.7rem;color:rgba(255,255,255,0.3)">${streak}🔥 DAY STREAK</div>
+        </div>
+      </div>
+
+      <!-- STAT ROW -->
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:28px">
+        ${[
+          {val: (totalMins/60).toFixed(1), lbl: 'Hours Studied', color: '#38bdf8', icon: '⏱'},
+          {val: sessions.length,           lbl: 'Sessions',      color: '#34d399', icon: '📚'},
+          {val: totalQs,                   lbl: 'Questions',     color: '#fbbf24', icon: '🎯'},
+          {val: `${doneTasks}/${todos.length}`, lbl: 'Tasks Done', color: '#f472b6', icon: '✅'},
+        ].map(x=>`
+          <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:14px;text-align:center">
+            <div style="font-size:1.1rem;margin-bottom:4px">${x.icon}</div>
+            <div style="font-family:'Orbitron',monospace;font-size:1.4rem;font-weight:900;color:${x.color};line-height:1;text-shadow:0 0 12px ${x.color}60">${x.val}</div>
+            <div style="font-family:'Rajdhani',sans-serif;font-size:0.6rem;text-transform:uppercase;letter-spacing:0.15em;color:rgba(255,255,255,0.35);margin-top:4px">${x.lbl}</div>
+          </div>`).join('')}
+      </div>
+    </div>
+  </div>
+
+  ${noDataMsg}
+
+  ${totalMins > 0 ? `
+  <!-- SUBJECT BREAKDOWN -->
+  <div style="padding:28px 40px;border-bottom:1px solid #f1f5f9">
+    <div style="font-family:'Rajdhani',sans-serif;font-size:0.72rem;text-transform:uppercase;letter-spacing:0.2em;color:#94a3b8;margin-bottom:18px">📊 Subject Breakdown</div>
+    ${subjRowsHTML}
+  </div>
+
+  <!-- SESSIONS TIMELINE -->
+  <div style="padding:28px 40px;border-bottom:1px solid #f1f5f9">
+    <div style="font-family:'Rajdhani',sans-serif;font-size:0.72rem;text-transform:uppercase;letter-spacing:0.2em;color:#94a3b8;margin-bottom:14px">⏱ Study Sessions</div>
+    ${sessionsHTML}
+  </div>
+  ` : ''}
+
+  ${todos.length > 0 ? `
+  <!-- TASKS -->
+  <div style="padding:28px 40px;border-bottom:1px solid #f1f5f9">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+      <div style="font-family:'Rajdhani',sans-serif;font-size:0.72rem;text-transform:uppercase;letter-spacing:0.2em;color:#94a3b8">✅ Tasks</div>
+      <div style="font-family:monospace;font-size:11px;background:#f0fdf4;color:#10b981;padding:3px 10px;border-radius:20px;font-weight:700;border:1px solid #bbf7d0">${doneTasks}/${todos.length} completed</div>
+    </div>
+    ${tasksHTML}
+  </div>
+  ` : ''}
+
+  <!-- ALL-TIME STATS + FOOTER -->
+  <div style="padding:24px 40px;background:#f8faff;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
+    <div>
+      <div style="font-family:'Rajdhani',sans-serif;font-size:0.65rem;text-transform:uppercase;letter-spacing:0.2em;color:#94a3b8;margin-bottom:8px">ALL-TIME PROGRESS</div>
+      <div style="display:flex;gap:20px">
+        <div style="text-align:center">
+          <div style="font-family:'Orbitron',monospace;font-size:1.1rem;font-weight:900;color:#38bdf8">${(allMins/60).toFixed(0)}h</div>
+          <div style="font-size:9px;color:#94a3b8;text-transform:uppercase;letter-spacing:0.1em">Total Hours</div>
+        </div>
+        <div style="text-align:center">
+          <div style="font-family:'Orbitron',monospace;font-size:1.1rem;font-weight:900;color:#34d399">${data.sessions.length}</div>
+          <div style="font-size:9px;color:#94a3b8;text-transform:uppercase;letter-spacing:0.1em">Sessions</div>
+        </div>
+        <div style="text-align:center">
+          <div style="font-family:'Orbitron',monospace;font-size:1.1rem;font-weight:900;color:#fbbf24">${allQs}</div>
+          <div style="font-size:9px;color:#94a3b8;text-transform:uppercase;letter-spacing:0.1em">Questions</div>
+        </div>
+        <div style="text-align:center">
+          <div style="font-family:'Orbitron',monospace;font-size:1.1rem;font-weight:900;color:#f472b6">${streak}🔥</div>
+          <div style="font-size:9px;color:#94a3b8;text-transform:uppercase;letter-spacing:0.1em">Streak</div>
+        </div>
+      </div>
+    </div>
+    <div style="text-align:right">
+      <div style="font-family:'Orbitron',monospace;font-size:0.75rem;font-weight:700;background:linear-gradient(90deg,#38bdf8,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">⚡ StudyVault Pro</div>
+      <div style="font-size:10px;color:#94a3b8;margin-top:2px">Generated ${new Date().toLocaleString('en-IN')}</div>
+    </div>
+  </div>
+
+</div><!-- /page -->
+</body>
+</html>`;
+
+  // Download as .html (opens beautifully in browser, printable as PDF)
+  const blob = new Blob([html], {type:'text/html'});
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href     = url;
+  a.download = `StudySummary_${dateStr}.html`;
+  a.click();
+  URL.revokeObjectURL(url);
+  flash(`✅ Summary downloaded! Open in browser → Print → Save as PDF`);
 }
 
 // ─── DATE DISPLAY ────────────────────────────────────────
