@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>StudyVault Pro</title>
-<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@300;400;500;600;700&family=Orbitron:wght@400;500;700;900&family=Nunito:ital,wght@0,300;0,400;0,600;1,300&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@300;400;500;600;700&family=Orbitron:wght@400;500;700;900&family=Arvo:ital,wght@0,300;0,400;0,600;1,300&display=swap" rel="stylesheet">
 <style>
 :root {
   --bg: #070b14;
@@ -24,7 +24,7 @@
   --warn: #fbbf24;
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
+body{font-family:'Arvo', slab-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
 .bg-canvas{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
 .bg-orb{position:absolute;border-radius:50%;filter:blur(80px);opacity:0.06;animation:orbFloat 12s ease-in-out infinite}
 .bg-orb:nth-child(1){width:600px;height:600px;background:#38bdf8;top:-200px;left:-100px;animation-delay:0s}
@@ -39,13 +39,13 @@ header{background:rgba(13,18,33,0.85);backdrop-filter:blur(20px);border-bottom:1
 .logo{display:flex;align-items:center;gap:12px}
 .logo-icon{width:36px;height:36px;background:linear-gradient(135deg,var(--glow),var(--glow2));border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;box-shadow:0 0 20px rgba(56,189,248,0.4)}
 .logo-text{font-family:'Orbitron',monospace;font-size:1.1rem;font-weight:700;background:linear-gradient(90deg,var(--glow),var(--glow2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;letter-spacing:0.05em}
-.logo-sub{font-family:'Rajdhani',sans-serif;font-size:0.65rem;color:var(--text3);letter-spacing:0.2em;text-transform:uppercase;margin-top:-2px}
+.logo-sub{font-family:'Rajdhani', slab-serif;font-size:0.65rem;color:var(--text3);letter-spacing:0.2em;text-transform:uppercase;margin-top:-2px}
 .header-right{display:flex;align-items:center;gap:24px}
 .hstat{text-align:center;position:relative}
 .hstat::after{content:'';position:absolute;bottom:-2px;left:50%;transform:translateX(-50%);width:20px;height:2px;background:var(--glow);border-radius:1px;opacity:0.6}
 .hstat-val{font-family:'Orbitron',monospace;font-size:1.3rem;font-weight:700;color:var(--glow);text-shadow:0 0 15px rgba(56,189,248,0.5);line-height:1}
-.hstat-lbl{font-family:'Rajdhani',sans-serif;font-size:0.6rem;text-transform:uppercase;letter-spacing:0.15em;color:var(--text3);margin-top:2px}
-.date-display{font-family:'Rajdhani',sans-serif;font-size:0.8rem;color:var(--text2);letter-spacing:0.05em;padding:6px 14px;background:var(--surface);border:1px solid var(--border);border-radius:20px}
+.hstat-lbl{font-family:'Rajdhani', slab-serif;font-size:0.6rem;text-transform:uppercase;letter-spacing:0.15em;color:var(--text3);margin-top:2px}
+.date-display{font-family:'Rajdhani', slab-serif;font-size:0.8rem;color:var(--text2);letter-spacing:0.05em;padding:6px 14px;background:var(--surface);border:1px solid var(--border);border-radius:20px}
 
 /* MAIN */
 .main{display:grid;grid-template-columns:320px 1fr 300px;gap:0;min-height:calc(100vh - 64px)}
@@ -56,7 +56,7 @@ header{background:rgba(13,18,33,0.85);backdrop-filter:blur(20px);border-bottom:1
 .card{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;transition:border-color 0.3s}
 .card:hover{border-color:var(--border2)}
 .card-head{padding:12px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,0.02)}
-.card-label{font-family:'Rajdhani',sans-serif;font-size:0.72rem;text-transform:uppercase;letter-spacing:0.18em;color:var(--text3)}
+.card-label{font-family:'Rajdhani', slab-serif;font-size:0.72rem;text-transform:uppercase;letter-spacing:0.18em;color:var(--text3)}
 .card-body{padding:18px}
 
 /* SUBJECT GRID */
@@ -66,46 +66,28 @@ header{background:rgba(13,18,33,0.85);backdrop-filter:blur(20px);border-bottom:1
 .subj-chip:hover::before,.subj-chip.active::before{opacity:0.07}
 .subj-chip.active{border-color:var(--subj-color);box-shadow:0 0 16px rgba(var(--subj-rgb),0.2),inset 0 0 20px rgba(var(--subj-rgb),0.05)}
 .subj-icon{font-size:1.3rem;margin-bottom:4px}
-.subj-name{font-family:'Rajdhani',sans-serif;font-size:0.9rem;font-weight:600;letter-spacing:0.05em}
+.subj-name{font-family:'Rajdhani', slab-serif;font-size:0.9rem;font-weight:600;letter-spacing:0.05em}
 .subj-hours{font-family:'Orbitron',monospace;font-size:0.65rem;color:var(--text3);margin-top:2px}
 
-/* STOPWATCH */
-.stopwatch-wrap{position:relative;display:flex;flex-direction:column;align-items:center;padding:20px 0}
-.sw-ring-container{position:relative;width:180px;height:180px;margin-bottom:16px}
-.sw-svg{width:180px;height:180px;transform:rotate(-90deg)}
-.sw-track{fill:none;stroke:rgba(56,189,248,0.08);stroke-width:6}
-.sw-arc{fill:none;stroke:url(#swGrad);stroke-width:6;stroke-linecap:round;stroke-dasharray:502;stroke-dashoffset:502;transition:stroke-dashoffset 0.5s ease;filter:drop-shadow(0 0 6px rgba(56,189,248,0.8))}
-.sw-inner{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
-.sw-time{font-family:'Orbitron',monospace;font-size:1.7rem;font-weight:700;color:var(--glow);text-shadow:0 0 20px rgba(56,189,248,0.6);letter-spacing:-0.02em;line-height:1}
-.sw-subj-label{font-family:'Rajdhani',sans-serif;font-size:0.68rem;color:var(--text3);text-transform:uppercase;letter-spacing:0.15em;margin-top:4px}
-.sw-pulse{position:absolute;inset:-10px;border-radius:50%;border:1px solid rgba(56,189,248,0.2);animation:swPulse 2s ease-in-out infinite;opacity:0}
-.sw-pulse.active{opacity:1}
-@keyframes swPulse{0%,100%{transform:scale(1);opacity:0.6}50%{transform:scale(1.05);opacity:0.1}}
-.sw-btns{display:flex;gap:10px;width:100%}
-.sw-btn{flex:1;font-family:'Rajdhani',sans-serif;font-size:0.85rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:10px;border:none;border-radius:8px;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;justify-content:center;gap:6px}
-.sw-start{background:linear-gradient(135deg,rgba(52,211,153,0.2),rgba(52,211,153,0.1));border:1px solid rgba(52,211,153,0.4);color:var(--glow3)}
-.sw-start:hover{background:rgba(52,211,153,0.25);box-shadow:0 0 20px rgba(52,211,153,0.2)}
-.sw-stop{background:linear-gradient(135deg,rgba(248,113,113,0.2),rgba(248,113,113,0.1));border:1px solid rgba(248,113,113,0.4);color:var(--danger)}
-.sw-stop:hover{background:rgba(248,113,113,0.25);box-shadow:0 0 20px rgba(248,113,113,0.2)}
-.sw-reset{background:var(--surface2);border:1px solid var(--border);color:var(--text2);flex:0.5}
+
 
 /* FORMS */
 .form-group{margin-bottom:12px}
-.inp-label{font-family:'Rajdhani',sans-serif;font-size:0.68rem;text-transform:uppercase;letter-spacing:0.15em;color:var(--text3);margin-bottom:5px;display:block}
-input[type=text],input[type=number],input[type=date],select,textarea{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:9px 12px;color:var(--text);font-family:'Nunito',sans-serif;font-size:0.85rem;outline:none;transition:all 0.2s}
+.inp-label{font-family:'Rajdhani', slab-serif;font-size:0.68rem;text-transform:uppercase;letter-spacing:0.15em;color:var(--text3);margin-bottom:5px;display:block}
+input[type=text],input[type=number],input[type=date],select,textarea{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:9px 12px;color:var(--text);font-family:'Arvo', slab-serif;font-size:0.85rem;outline:none;transition:all 0.2s}
 input:focus,select:focus,textarea:focus{border-color:rgba(56,189,248,0.5);box-shadow:0 0 0 3px rgba(56,189,248,0.06);background:var(--surface2)}
 textarea{resize:vertical;min-height:60px}
 select option{background:var(--bg2)}
 .row2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 
 /* BUTTONS */
-.btn{font-family:'Rajdhani',sans-serif;font-size:0.85rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;padding:10px 18px;border:none;border-radius:8px;cursor:pointer;transition:all 0.2s;display:inline-flex;align-items:center;justify-content:center;gap:6px}
+.btn{font-family:'Rajdhani', slab-serif;font-size:0.85rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;padding:10px 18px;border:none;border-radius:8px;cursor:pointer;transition:all 0.2s;display:inline-flex;align-items:center;justify-content:center;gap:6px}
 .btn-primary{width:100%;background:linear-gradient(135deg,rgba(56,189,248,0.25),rgba(129,140,248,0.15));border:1px solid rgba(56,189,248,0.4);color:var(--glow);position:relative;overflow:hidden}
 .btn-primary::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(56,189,248,0.1),transparent);opacity:0;transition:opacity 0.2s}
 .btn-primary:hover{box-shadow:0 0 25px rgba(56,189,248,0.25)}
 .btn-primary:hover::after{opacity:1}
 .btn-primary:active{transform:scale(0.98)}
-.btn-sm{font-size:0.72rem;padding:5px 12px;border-radius:6px;background:var(--surface2);border:1px solid var(--border);color:var(--text2);cursor:pointer;font-family:'Rajdhani',sans-serif;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;transition:all 0.15s}
+.btn-sm{font-size:0.72rem;padding:5px 12px;border-radius:6px;background:var(--surface2);border:1px solid var(--border);color:var(--text2);cursor:pointer;font-family:'Rajdhani', slab-serif;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;transition:all 0.15s}
 .btn-sm:hover{border-color:var(--border2);color:var(--text)}
 .btn-icon{background:none;border:none;cursor:pointer;color:var(--text3);font-size:0.9rem;padding:2px 6px;border-radius:4px;transition:all 0.15s}
 .btn-icon:hover{color:var(--danger);background:rgba(248,113,113,0.1)}
@@ -116,7 +98,7 @@ select option{background:var(--bg2)}
 .session-item:hover{background:rgba(255,255,255,0.02)}
 .session-item:last-child{border-bottom:none}
 .sess-bar{width:3px;height:44px;border-radius:2px;flex-shrink:0}
-.sess-subj{font-family:'Rajdhani',sans-serif;font-size:1rem;font-weight:600;letter-spacing:0.05em}
+.sess-subj{font-family:'Rajdhani', slab-serif;font-size:1rem;font-weight:600;letter-spacing:0.05em}
 .sess-note{font-size:0.75rem;color:var(--text3);margin-top:1px}
 .sess-dur{font-family:'Orbitron',monospace;font-size:0.95rem;font-weight:700;margin-left:auto}
 
@@ -126,12 +108,12 @@ select option{background:var(--bg2)}
 .stat-box::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--accent-color,var(--glow));opacity:0.6}
 .stat-box:hover{border-color:var(--border2);transform:translateY(-2px)}
 .stat-val{font-family:'Orbitron',monospace;font-size:1.8rem;font-weight:900;line-height:1;color:var(--accent-color,var(--glow));text-shadow:0 0 20px var(--accent-color,rgba(56,189,248,0.5))}
-.stat-lbl{font-family:'Rajdhani',sans-serif;font-size:0.65rem;text-transform:uppercase;letter-spacing:0.15em;color:var(--text3);margin-top:4px}
+.stat-lbl{font-family:'Rajdhani', slab-serif;font-size:0.65rem;text-transform:uppercase;letter-spacing:0.15em;color:var(--text3);margin-top:4px}
 
 /* WEEK */
 .week-row{display:flex;gap:6px;align-items:center}
 .week-cell{flex:1;display:flex;flex-direction:column;align-items:center;gap:5px}
-.wc-day{font-family:'Rajdhani',sans-serif;font-size:0.65rem;text-transform:uppercase;color:var(--text3);letter-spacing:0.1em}
+.wc-day{font-family:'Rajdhani', slab-serif;font-size:0.65rem;text-transform:uppercase;color:var(--text3);letter-spacing:0.1em}
 .wc-dot{width:34px;height:34px;border-radius:8px;background:var(--surface2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-family:'Orbitron',monospace;font-size:0.6rem;color:var(--text3);transition:all 0.3s;cursor:pointer}
 .wc-dot:hover{border-color:var(--glow);transform:scale(1.1)}
 .wc-dot.studied{background:linear-gradient(135deg,rgba(52,211,153,0.25),rgba(56,189,248,0.15));border-color:rgba(52,211,153,0.5);color:var(--glow3);box-shadow:0 0 12px rgba(52,211,153,0.15)}
@@ -141,7 +123,7 @@ select option{background:var(--bg2)}
 /* PROGRESS BARS */
 .subj-bar-item{margin-bottom:14px}
 .sbh{display:flex;justify-content:space-between;margin-bottom:5px;align-items:center}
-.sbn{font-family:'Rajdhani',sans-serif;font-size:0.88rem;font-weight:600;letter-spacing:0.05em}
+.sbn{font-family:'Rajdhani', slab-serif;font-size:0.88rem;font-weight:600;letter-spacing:0.05em}
 .sbv{font-family:'Orbitron',monospace;font-size:0.72rem;color:var(--text2)}
 .bar-track{height:5px;background:var(--surface2);border-radius:3px;overflow:hidden}
 .bar-fill{height:100%;border-radius:3px;transition:width 0.8s cubic-bezier(0.34,1.56,0.64,1);position:relative;overflow:hidden}
@@ -158,7 +140,7 @@ select option{background:var(--bg2)}
 .todo-check.done{background:var(--glow3);border-color:var(--glow3);color:#fff}
 .todo-text{flex:1;font-size:0.85rem;transition:all 0.2s}
 .todo-text.done{text-decoration:line-through;color:var(--text3)}
-.todo-subj-tag{font-family:'Rajdhani',sans-serif;font-size:0.65rem;font-weight:600;letter-spacing:0.08em;padding:2px 7px;border-radius:20px;text-transform:uppercase;opacity:0.8}
+.todo-subj-tag{font-family:'Rajdhani', slab-serif;font-size:0.65rem;font-weight:600;letter-spacing:0.08em;padding:2px 7px;border-radius:20px;text-transform:uppercase;opacity:0.8}
 
 /* Q COUNTER */
 .q-counter{display:flex;align-items:center;gap:14px}
@@ -169,12 +151,12 @@ select option{background:var(--bg2)}
 .q-info{flex:1}
 .q-subj-breakdown{display:flex;flex-direction:column;gap:5px;margin-top:10px;max-height:130px;overflow-y:auto}
 .q-row{display:flex;align-items:center;justify-content:space-between;font-size:0.78rem;padding:4px 8px;background:var(--bg3);border-radius:6px}
-.q-row-name{font-family:'Rajdhani',sans-serif;font-weight:600;letter-spacing:0.05em}
+.q-row-name{font-family:'Rajdhani', slab-serif;font-weight:600;letter-spacing:0.05em}
 .q-row-val{font-family:'Orbitron',monospace;font-size:0.8rem}
 
 /* TABS */
 .tabs{display:flex;border-bottom:1px solid var(--border);overflow-x:auto}
-.tab{padding:11px 16px;font-family:'Rajdhani',sans-serif;font-size:0.72rem;text-transform:uppercase;letter-spacing:0.12em;cursor:pointer;color:var(--text3);border-bottom:2px solid transparent;margin-bottom:-1px;white-space:nowrap;transition:all 0.2s;flex-shrink:0}
+.tab{padding:11px 16px;font-family:'Rajdhani', slab-serif;font-size:0.72rem;text-transform:uppercase;letter-spacing:0.12em;cursor:pointer;color:var(--text3);border-bottom:2px solid transparent;margin-bottom:-1px;white-space:nowrap;transition:all 0.2s;flex-shrink:0}
 .tab.active{color:var(--glow);border-bottom-color:var(--glow)}
 .tab:hover:not(.active){color:var(--text2)}
 .tab-pane{display:none}
@@ -182,7 +164,7 @@ select option{background:var(--bg2)}
 
 /* SECTION DIVIDER */
 .section-divider{display:flex;align-items:center;gap:8px;margin:4px 0}
-.section-divider span{font-family:'Rajdhani',sans-serif;font-size:0.65rem;text-transform:uppercase;letter-spacing:0.2em;color:var(--text3);white-space:nowrap}
+.section-divider span{font-family:'Rajdhani', slab-serif;font-size:0.65rem;text-transform:uppercase;letter-spacing:0.2em;color:var(--text3);white-space:nowrap}
 .section-divider::before,.section-divider::after{content:'';flex:1;height:1px;background:var(--border)}
 
 /* LIVE DOT */
@@ -190,11 +172,11 @@ select option{background:var(--bg2)}
 .live-dot{width:6px;height:6px;background:var(--glow3);border-radius:50%;animation:blink 1.2s ease-in-out infinite;box-shadow:0 0 6px var(--glow3);flex-shrink:0}
 
 /* FLASH */
-.flash{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--surface);border:1px solid var(--glow3);color:var(--glow3);padding:12px 24px;border-radius:30px;font-family:'Rajdhani',sans-serif;font-size:0.88rem;font-weight:600;letter-spacing:0.05em;opacity:0;transition:all 0.3s;z-index:999;pointer-events:none;box-shadow:0 0 30px rgba(52,211,153,0.2);white-space:nowrap}
+.flash{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--surface);border:1px solid var(--glow3);color:var(--glow3);padding:12px 24px;border-radius:30px;font-family:'Rajdhani', slab-serif;font-size:0.88rem;font-weight:600;letter-spacing:0.05em;opacity:0;transition:all 0.3s;z-index:999;pointer-events:none;box-shadow:0 0 30px rgba(52,211,153,0.2);white-space:nowrap}
 .flash.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
 /* EMPTY */
-.empty-state{text-align:center;padding:30px 20px;color:var(--text3);font-family:'Nunito',sans-serif;font-style:italic;font-size:0.85rem}
+.empty-state{text-align:center;padding:30px 20px;color:var(--text3);font-family:'Arvo', slab-serif;font-style:italic;font-size:0.85rem}
 .empty-icon{font-size:2rem;margin-bottom:8px;opacity:0.4}
 
 /* SCROLLBAR */
@@ -222,10 +204,10 @@ select option{background:var(--bg2)}
 }
 .view-banner.active{display:flex}
 .vb-label{font-family:'Orbitron',monospace;font-size:0.8rem;color:var(--warn);letter-spacing:0.08em}
-.vb-date{font-family:'Rajdhani',sans-serif;font-size:1.1rem;font-weight:700;color:var(--warn)}
-.vb-close{font-family:'Rajdhani',sans-serif;font-size:0.75rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:5px 14px;border:1px solid rgba(251,191,36,0.4);border-radius:6px;background:transparent;color:var(--warn);cursor:pointer;transition:all 0.2s}
+.vb-date{font-family:'Rajdhani', slab-serif;font-size:1.1rem;font-weight:700;color:var(--warn)}
+.vb-close{font-family:'Rajdhani', slab-serif;font-size:0.75rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:5px 14px;border:1px solid rgba(251,191,36,0.4);border-radius:6px;background:transparent;color:var(--warn);cursor:pointer;transition:all 0.2s}
 .vb-close:hover{background:rgba(251,191,36,0.1)}
-.vb-download{font-family:'Rajdhani',sans-serif;font-size:0.75rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:5px 14px;border:1px solid rgba(52,211,153,0.5);border-radius:6px;background:rgba(52,211,153,0.1);color:var(--glow3);cursor:pointer;transition:all 0.2s}
+.vb-download{font-family:'Rajdhani', slab-serif;font-size:0.75rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:5px 14px;border:1px solid rgba(52,211,153,0.5);border-radius:6px;background:rgba(52,211,153,0.1);color:var(--glow3);cursor:pointer;transition:all 0.2s}
 .vb-download:hover{background:rgba(52,211,153,0.2);box-shadow:0 0 16px rgba(52,211,153,0.2)}
 
 /* Calendar modal */
@@ -239,7 +221,7 @@ select option{background:var(--bg2)}
 .cal-nav-btn{width:30px;height:30px;border-radius:6px;border:1px solid var(--border2);background:var(--bg3);color:var(--text2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:0.85rem;transition:all 0.15s}
 .cal-nav-btn:hover{border-color:var(--glow);color:var(--glow)}
 .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
-.cal-dow{font-family:'Rajdhani',sans-serif;font-size:0.6rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--text3);text-align:center;padding:4px 0 8px}
+.cal-dow{font-family:'Rajdhani', slab-serif;font-size:0.6rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--text3);text-align:center;padding:4px 0 8px}
 .cal-day{aspect-ratio:1;border-radius:6px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;transition:all 0.15s;font-family:'Orbitron',monospace;font-size:0.7rem;color:var(--text2);background:var(--bg3);border:1px solid transparent;position:relative;gap:2px}
 .cal-day:hover{border-color:var(--border2);color:var(--text)}
 .cal-day.empty{pointer-events:none;background:transparent;border-color:transparent}
@@ -248,9 +230,9 @@ select option{background:var(--bg2)}
 .cal-day.today-cal{border-color:rgba(56,189,248,0.5);color:var(--glow);box-shadow:0 0 8px rgba(56,189,248,0.15)}
 .cal-day.selected-cal{background:linear-gradient(135deg,rgba(251,191,36,0.2),rgba(251,191,36,0.08));border-color:rgba(251,191,36,0.6);color:var(--warn);box-shadow:0 0 12px rgba(251,191,36,0.2)}
 .cal-day.future-day{opacity:0.25;pointer-events:none}
-.cal-hrs-dot{font-size:0.45rem;color:inherit;opacity:0.7;font-family:'Nunito',sans-serif}
+.cal-hrs-dot{font-size:0.45rem;color:inherit;opacity:0.7;font-family:'Arvo', slab-serif}
 .cal-footer{margin-top:20px;display:flex;gap:10px;align-items:center;justify-content:flex-end}
-.cal-legend{display:flex;gap:14px;margin-right:auto;font-family:'Rajdhani',sans-serif;font-size:0.65rem;color:var(--text3);align-items:center}
+.cal-legend{display:flex;gap:14px;margin-right:auto;font-family:'Rajdhani', slab-serif;font-size:0.65rem;color:var(--text3);align-items:center}
 .leg-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
 
 /* Day Report Panel */
@@ -261,8 +243,8 @@ select option{background:var(--bg2)}
 .dr-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;padding:14px 18px;border-bottom:1px solid var(--border)}
 .dr-stat{text-align:center;background:var(--bg3);border-radius:8px;padding:10px 6px;border:1px solid var(--border)}
 .dr-stat-val{font-family:'Orbitron',monospace;font-size:1.2rem;font-weight:900;line-height:1}
-.dr-stat-lbl{font-family:'Rajdhani',sans-serif;font-size:0.58rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--text3);margin-top:3px}
-.dr-section-title{font-family:'Rajdhani',sans-serif;font-size:0.68rem;text-transform:uppercase;letter-spacing:0.18em;color:var(--text3);padding:12px 18px 6px;border-bottom:1px solid var(--border)}
+.dr-stat-lbl{font-family:'Rajdhani', slab-serif;font-size:0.58rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--text3);margin-top:3px}
+.dr-section-title{font-family:'Rajdhani', slab-serif;font-size:0.68rem;text-transform:uppercase;letter-spacing:0.18em;color:var(--text3);padding:12px 18px 6px;border-bottom:1px solid var(--border)}
 .dr-body{max-height:360px;overflow-y:auto}
 
 /* Month heatmap strip for history */
@@ -270,7 +252,7 @@ select option{background:var(--bg2)}
 .mh-row{display:flex;gap:3px;flex-wrap:wrap}
 .mh-cell{width:14px;height:14px;border-radius:2px;cursor:pointer;transition:all 0.15s;position:relative}
 .mh-cell:hover{transform:scale(1.3);z-index:2}
-.mh-cell[title]:hover::after{content:attr(title);position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);background:var(--surface);border:1px solid var(--border2);padding:3px 8px;border-radius:4px;font-size:0.6rem;white-space:nowrap;z-index:10;color:var(--text);font-family:'Rajdhani',sans-serif;letter-spacing:0.05em;pointer-events:none}
+.mh-cell[title]:hover::after{content:attr(title);position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);background:var(--surface);border:1px solid var(--border2);padding:3px 8px;border-radius:4px;font-size:0.6rem;white-space:nowrap;z-index:10;color:var(--text);font-family:'Rajdhani', slab-serif;letter-spacing:0.05em;pointer-events:none}
 
 /* Responsive */
 @media(max-width:1100px){.main{grid-template-columns:280px 1fr 260px}}
@@ -362,40 +344,7 @@ select option{background:var(--bg2)}
       </div>
     </div>
 
-    <!-- STOPWATCH -->
-    <div class="card">
-      <div class="card-head">
-        <span class="card-label">⏱ Focus Timer</span>
-        <span id="swStatus" style="font-family:'Rajdhani',sans-serif;font-size:0.7rem;color:var(--text3);letter-spacing:0.1em;text-transform:uppercase">IDLE</span>
-      </div>
-      <div class="card-body">
-        <div class="stopwatch-wrap">
-          <div class="sw-ring-container">
-            <svg class="sw-svg" viewBox="0 0 180 180">
-              <defs>
-                <linearGradient id="swGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" style="stop-color:#38bdf8"/>
-                  <stop offset="100%" style="stop-color:#818cf8"/>
-                </linearGradient>
-              </defs>
-              <circle class="sw-track" cx="90" cy="90" r="80"/>
-              <circle class="sw-arc" id="swArc" cx="90" cy="90" r="80"/>
-            </svg>
-            <div class="sw-inner">
-              <div class="sw-time" id="swDisplay">00:00:00</div>
-              <div class="sw-subj-label" id="swSubjLabel">SELECT SUBJECT</div>
-            </div>
-            <div class="sw-pulse" id="swPulse"></div>
-          </div>
-          <div class="sw-btns">
-            <button class="sw-btn sw-start" onclick="startTimer()">▶ START</button>
-            <button class="sw-btn sw-stop" onclick="stopTimer()">■ LOG</button>
-            <button class="sw-btn sw-reset" onclick="resetTimer()">↺</button>
-          </div>
-        </div>
-      </div>
-    </div>
-
+   
     <!-- STAT BOXES -->
     <div class="today-stats">
       <div class="stat-box" style="--accent-color:#38bdf8"><div class="stat-val" id="todayHrs">0.0</div><div class="stat-lbl">Hours</div></div>
@@ -484,7 +433,7 @@ select option{background:var(--bg2)}
       <div id="tab-qstats" class="tab-pane" style="padding:18px"><div id="qStatsList"></div></div>
       <div id="tab-heatmap" class="tab-pane"><div id="heatmapPanel"></div></div>
       <div style="padding:10px 18px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center">
-        <span style="font-family:'Rajdhani',sans-serif;font-size:0.68rem;color:var(--text3);letter-spacing:0.1em">ALL DATA SAVED LOCALLY</span>
+        <span style="font-family:'Rajdhani', slab-serif;font-size:0.68rem;color:var(--text3);letter-spacing:0.1em">ALL DATA SAVED LOCALLY</span>
         <button class="btn-sm" onclick="clearAll()" style="color:var(--danger);border-color:rgba(248,113,113,0.3)">🗑 Clear All</button>
       </div>
     </div>
@@ -506,7 +455,7 @@ select option{background:var(--bg2)}
         <div class="q-counter">
           <div>
             <div class="q-num" id="qCount">0</div>
-            <div style="font-family:'Rajdhani',sans-serif;font-size:0.65rem;text-transform:uppercase;letter-spacing:0.15em;color:var(--text3);margin-top:4px">Today's Total</div>
+            <div style="font-family:'Rajdhani', slab-serif;font-size:0.65rem;text-transform:uppercase;letter-spacing:0.15em;color:var(--text3);margin-top:4px">Today's Total</div>
           </div>
           <div class="q-controls">
             <button class="q-btn" onclick="addQ(10)">+10</button>
@@ -514,7 +463,7 @@ select option{background:var(--bg2)}
             <button class="q-btn" onclick="addQ(-1)">-1</button>
           </div>
           <div class="q-info">
-            <div style="font-family:'Rajdhani',sans-serif;font-size:0.72rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--text3);margin-bottom:6px">Subject Breakdown</div>
+            <div style="font-family:'Rajdhani', slab-serif;font-size:0.72rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--text3);margin-bottom:6px">Subject Breakdown</div>
             <div class="q-subj-breakdown" id="qBreakdown"></div>
           </div>
         </div>
@@ -551,7 +500,7 @@ select option{background:var(--bg2)}
     <div class="card">
       <div class="card-body" style="padding:16px;text-align:center">
         <div style="font-size:1.4rem;margin-bottom:8px">💡</div>
-        <div id="quoteText" style="font-family:'Nunito',sans-serif;font-style:italic;font-size:0.82rem;color:var(--text2);line-height:1.6"></div>
+        <div id="quoteText" style="font-family:'Arvo', slab-serif;font-style:italic;font-size:0.82rem;color:var(--text2);line-height:1.6"></div>
       </div>
     </div>
 
@@ -644,63 +593,6 @@ function exitViewMode() {
   renderAll();
 }
 
-// ─── TIMER ────────────────────────────────────────────────
-let timerInterval=null, timerStart=null, timerSecs=0, selectedSubj=null;
-
-function selectSubject(id) {
-  selectedSubj = id;
-  document.querySelectorAll('.subj-chip').forEach(c=>c.classList.remove('active'));
-  const chip = document.querySelector(`.subj-chip[data-id="${id}"]`);
-  if (chip) chip.classList.add('active');
-  const s = SUBJECTS.find(x=>x.id===id);
-  if (s) {
-    document.getElementById('swSubjLabel').textContent = s.name.toUpperCase();
-    document.querySelector('.sw-arc').style.stroke = s.color;
-    document.querySelector('.sw-arc').style.filter = `drop-shadow(0 0 6px ${s.color})`;
-  }
-}
-
-function startTimer() {
-  if (timerInterval) return;
-  if (!selectedSubj) { flash('⚠️ Select a subject first!'); return; }
-  timerStart = Date.now() - timerSecs*1000;
-  timerInterval = setInterval(tickTimer, 1000);
-  document.getElementById('swPulse').classList.add('active');
-  document.getElementById('swStatus').textContent = 'RUNNING';
-  document.getElementById('swStatus').style.color = 'var(--glow3)';
-  document.getElementById('timerDot').style.display = 'block';
-}
-
-function tickTimer() {
-  timerSecs = Math.floor((Date.now()-timerStart)/1000);
-  const h = Math.floor(timerSecs/3600).toString().padStart(2,'0');
-  const m = Math.floor((timerSecs%3600)/60).toString().padStart(2,'0');
-  const s = (timerSecs%60).toString().padStart(2,'0');
-  document.getElementById('swDisplay').textContent = `${h}:${m}:${s}`;
-  const circum = 502;
-  document.getElementById('swArc').style.strokeDashoffset = circum - (circum * ((timerSecs%3600)/3600));
-}
-
-function stopTimer() {
-  if (!timerInterval) { flash('⚠️ Timer not running!'); return; }
-  clearInterval(timerInterval); timerInterval=null;
-  const mins = Math.round(timerSecs/60);
-  if (mins<1) { flash('Too short to log (<1 min)'); resetTimer(); return; }
-  data.sessions.unshift({ id:uid(), subjectId:selectedSubj, minutes:mins, note:'Timed session', questions:0, date:new Date().toISOString() });
-  save();
-  flash(`✅ Logged ${mins}m of ${SUBJECTS.find(s=>s.id===selectedSubj)?.name}!`);
-  resetTimer(); renderAll();
-}
-
-function resetTimer() {
-  clearInterval(timerInterval); timerInterval=null; timerSecs=0; timerStart=null;
-  document.getElementById('swDisplay').textContent='00:00:00';
-  document.getElementById('swArc').style.strokeDashoffset=502;
-  document.getElementById('swPulse').classList.remove('active');
-  document.getElementById('swStatus').textContent='IDLE';
-  document.getElementById('swStatus').style.color='var(--text3)';
-  document.getElementById('timerDot').style.display='none';
-}
 
 // ─── LOG SESSION ──────────────────────────────────────────
 function logSession() {
@@ -1061,11 +953,11 @@ function renderHeatmap() {
           title="${lbl}"></div>`;
       }).join('');
       return `<div style="margin-bottom:14px">
-        <div style="font-family:'Rajdhani',sans-serif;font-size:0.7rem;text-transform:uppercase;letter-spacing:0.15em;color:var(--text3);margin-bottom:6px">${mname}</div>
+        <div style="font-family:'Rajdhani', slab-serif;font-size:0.7rem;text-transform:uppercase;letter-spacing:0.15em;color:var(--text3);margin-bottom:6px">${mname}</div>
         <div class="mh-row">${cells}</div>
       </div>`;
     }).join('')
-  + '<div style="display:flex;gap:16px;align-items:center;margin-top:10px;font-family:\'Rajdhani\',sans-serif;font-size:0.65rem;color:var(--text3)">'
+  + '<div style="display:flex;gap:16px;align-items:center;margin-top:10px;font-family:\'Rajdhani\', slab-serif;font-size:0.65rem;color:var(--text3)">'
   + '<span>Less</span>'
   + ['rgba(52,211,153,0.15)','rgba(52,211,153,0.35)','rgba(52,211,153,0.55)','rgba(52,211,153,0.75)','rgba(52,211,153,0.9)'].map(c=>`<div style="width:12px;height:12px;border-radius:2px;background:${c}"></div>`).join('')
   + '<span>More</span>'
@@ -1269,10 +1161,10 @@ function downloadSummary(dateStr) {
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Study Summary — ${dayShort}</title>
-<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600;700&family=Orbitron:wght@700;900&family=Nunito:wght@400;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600;700&family=Orbitron:wght@700;900&family=Arvo:wght@400;600&display=swap" rel="stylesheet">
 <style>
   *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-  body{font-family:'Nunito',sans-serif;background:#f0f4ff;color:#1a2540;min-height:100vh;padding:0}
+  body{font-family:'Arvo', slab-serif;background:#f0f4ff;color:#1a2540;min-height:100vh;padding:0}
   @media print {
     body{background:#fff}
     .no-print{display:none!important}
@@ -1286,8 +1178,8 @@ function downloadSummary(dateStr) {
 <div class="no-print" style="background:#1a2540;padding:12px 32px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 2px 20px rgba(0,0,0,0.3)">
   <div style="font-family:'Orbitron',monospace;font-size:0.85rem;color:#38bdf8;letter-spacing:0.08em">⚡ STUDYVAULT PRO — DAY SUMMARY</div>
   <div style="display:flex;gap:10px">
-    <button onclick="window.print()" style="font-family:'Rajdhani',sans-serif;font-size:0.8rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:8px 20px;background:linear-gradient(135deg,rgba(56,189,248,0.25),rgba(129,140,248,0.15));border:1px solid rgba(56,189,248,0.5);border-radius:6px;color:#38bdf8;cursor:pointer">🖨 Print / Save PDF</button>
-    <button onclick="window.close()" style="font-family:'Rajdhani',sans-serif;font-size:0.8rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:8px 20px;background:transparent;border:1px solid rgba(255,255,255,0.15);border-radius:6px;color:#8899bb;cursor:pointer">✕ Close</button>
+    <button onclick="window.print()" style="font-family:'Rajdhani', slab-serif;font-size:0.8rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:8px 20px;background:linear-gradient(135deg,rgba(56,189,248,0.25),rgba(129,140,248,0.15));border:1px solid rgba(56,189,248,0.5);border-radius:6px;color:#38bdf8;cursor:pointer">🖨 Print / Save PDF</button>
+    <button onclick="window.close()" style="font-family:'Rajdhani', slab-serif;font-size:0.8rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:8px 20px;background:transparent;border:1px solid rgba(255,255,255,0.15);border-radius:6px;color:#8899bb;cursor:pointer">✕ Close</button>
   </div>
 </div>
 
@@ -1303,13 +1195,13 @@ function downloadSummary(dateStr) {
     <div style="position:relative;z-index:1">
       <div style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:16px">
         <div>
-          <div style="font-family:'Rajdhani',sans-serif;font-size:0.65rem;letter-spacing:0.3em;text-transform:uppercase;color:rgba(56,189,248,0.6);margin-bottom:6px">DAILY STUDY REPORT</div>
+          <div style="font-family:'Rajdhani', slab-serif;font-size:0.65rem;letter-spacing:0.3em;text-transform:uppercase;color:rgba(56,189,248,0.6);margin-bottom:6px">DAILY STUDY REPORT</div>
           <div style="font-family:'Orbitron',monospace;font-size:1.6rem;font-weight:900;color:#fff;letter-spacing:0.02em;line-height:1.1">${dayLabel.split(',')[0].toUpperCase()}</div>
           <div style="font-family:'Orbitron',monospace;font-size:0.9rem;font-weight:700;color:#38bdf8;margin-top:4px;letter-spacing:0.05em">${dayShort}</div>
         </div>
         <div style="text-align:right">
           <div style="font-size:1.8rem;margin-bottom:4px">${grade.split(' ')[0]}</div>
-          <div style="font-family:'Rajdhani',sans-serif;font-size:0.78rem;color:rgba(255,255,255,0.6);letter-spacing:0.05em">${grade.split(' ').slice(1).join(' ')}</div>
+          <div style="font-family:'Rajdhani', slab-serif;font-size:0.78rem;color:rgba(255,255,255,0.6);letter-spacing:0.05em">${grade.split(' ').slice(1).join(' ')}</div>
           <div style="margin-top:8px;font-family:'Orbitron',monospace;font-size:0.7rem;color:rgba(255,255,255,0.3)">${streak}🔥 DAY STREAK</div>
         </div>
       </div>
@@ -1325,7 +1217,7 @@ function downloadSummary(dateStr) {
           <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:14px;text-align:center">
             <div style="font-size:1.1rem;margin-bottom:4px">${x.icon}</div>
             <div style="font-family:'Orbitron',monospace;font-size:1.4rem;font-weight:900;color:${x.color};line-height:1;text-shadow:0 0 12px ${x.color}60">${x.val}</div>
-            <div style="font-family:'Rajdhani',sans-serif;font-size:0.6rem;text-transform:uppercase;letter-spacing:0.15em;color:rgba(255,255,255,0.35);margin-top:4px">${x.lbl}</div>
+            <div style="font-family:'Rajdhani', slab-serif;font-size:0.6rem;text-transform:uppercase;letter-spacing:0.15em;color:rgba(255,255,255,0.35);margin-top:4px">${x.lbl}</div>
           </div>`).join('')}
       </div>
     </div>
@@ -1336,13 +1228,13 @@ function downloadSummary(dateStr) {
   ${totalMins > 0 ? `
   <!-- SUBJECT BREAKDOWN -->
   <div style="padding:28px 40px;border-bottom:1px solid #f1f5f9">
-    <div style="font-family:'Rajdhani',sans-serif;font-size:0.72rem;text-transform:uppercase;letter-spacing:0.2em;color:#94a3b8;margin-bottom:18px">📊 Subject Breakdown</div>
+    <div style="font-family:'Rajdhani', slab-serif;font-size:0.72rem;text-transform:uppercase;letter-spacing:0.2em;color:#94a3b8;margin-bottom:18px">📊 Subject Breakdown</div>
     ${subjRowsHTML}
   </div>
 
   <!-- SESSIONS TIMELINE -->
   <div style="padding:28px 40px;border-bottom:1px solid #f1f5f9">
-    <div style="font-family:'Rajdhani',sans-serif;font-size:0.72rem;text-transform:uppercase;letter-spacing:0.2em;color:#94a3b8;margin-bottom:14px">⏱ Study Sessions</div>
+    <div style="font-family:'Rajdhani', slab-serif;font-size:0.72rem;text-transform:uppercase;letter-spacing:0.2em;color:#94a3b8;margin-bottom:14px">⏱ Study Sessions</div>
     ${sessionsHTML}
   </div>
   ` : ''}
@@ -1351,7 +1243,7 @@ function downloadSummary(dateStr) {
   <!-- TASKS -->
   <div style="padding:28px 40px;border-bottom:1px solid #f1f5f9">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
-      <div style="font-family:'Rajdhani',sans-serif;font-size:0.72rem;text-transform:uppercase;letter-spacing:0.2em;color:#94a3b8">✅ Tasks</div>
+      <div style="font-family:'Rajdhani', slab-serif;font-size:0.72rem;text-transform:uppercase;letter-spacing:0.2em;color:#94a3b8">✅ Tasks</div>
       <div style="font-family:monospace;font-size:11px;background:#f0fdf4;color:#10b981;padding:3px 10px;border-radius:20px;font-weight:700;border:1px solid #bbf7d0">${doneTasks}/${todos.length} completed</div>
     </div>
     ${tasksHTML}
@@ -1361,7 +1253,7 @@ function downloadSummary(dateStr) {
   <!-- ALL-TIME STATS + FOOTER -->
   <div style="padding:24px 40px;background:#f8faff;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
     <div>
-      <div style="font-family:'Rajdhani',sans-serif;font-size:0.65rem;text-transform:uppercase;letter-spacing:0.2em;color:#94a3b8;margin-bottom:8px">ALL-TIME PROGRESS</div>
+      <div style="font-family:'Rajdhani', slab-serif;font-size:0.65rem;text-transform:uppercase;letter-spacing:0.2em;color:#94a3b8;margin-bottom:8px">ALL-TIME PROGRESS</div>
       <div style="display:flex;gap:20px">
         <div style="text-align:center">
           <div style="font-family:'Orbitron',monospace;font-size:1.1rem;font-weight:900;color:#38bdf8">${(allMins/60).toFixed(0)}h</div>
